@@ -1,0 +1,231 @@
+/* Path: client/src/styles/pages/PropertyDetails.css */
+
+.property-details-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .property-details {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .property-main-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+  }
+  
+  .property-info {
+    padding: 2rem;
+  }
+  
+  .property-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .property-title {
+    font-size: 2rem;
+    color: #2d3748;
+    margin: 0;
+  }
+  
+  .status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .status-badge.for_sale {
+    background-color: #C6F6D5;
+    color: #2F855A;
+  }
+  
+  .status-badge.for_rent {
+    background-color: #BEE3F8;
+    color: #2C5282;
+  }
+  
+  .property-price {
+    font-size: 2rem;
+    color: #2c5282;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .property-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .location-icon {
+    color: #2c5282;
+  }
+  
+  .property-features {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f7fafc;
+    border-radius: 8px;
+  }
+  
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    font-size: 1rem;
+  }
+  
+  .feature-icon {
+    color: #2c5282;
+    font-size: 1.25rem;
+  }
+  
+  .property-type {
+    margin-bottom: 2rem;
+    color: #4a5568;
+  }
+  
+  .property-description {
+    margin-bottom: 2rem;
+  }
+  
+  .property-description h2 {
+    color: #2d3748;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .property-description p {
+    color: #4a5568;
+    line-height: 1.6;
+  }
+  
+  .property-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .contact-button {
+    background-color: #2c5282;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .contact-button:hover {
+    background-color: #1a365d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    z-index: 1000;
+  }
+  
+  .error-message {
+    text-align: center;
+    padding: 2rem;
+    background: #fff5f5;
+    color: #c53030;
+    border-radius: 8px;
+    margin: 2rem;
+  }
+  
+  @media (max-width: 768px) {
+    .property-details-container {
+      padding: 1rem;
+    }
+  
+    .property-main-image {
+      height: 300px;
+    }
+  
+    .property-info {
+      padding: 1rem;
+    }
+  
+    .property-title {
+      font-size: 1.5rem;
+    }
+  
+    .property-features {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .property-actions {
+      flex-direction: column;
+    }
+  
+    .contact-button {
+      width: 100%;
+    }
+  }
+
+  .property-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .contact-button,
+  .appointment-button {
+    flex: 1;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .contact-button {
+    background-color: #2c5282;
+    color: white;
+    border: none;
+  }
+  
+  .appointment-button {
+    background-color: #38a169;
+    color: white;
+    border: none;
+  }
+  
+  .contact-button:hover {
+    background-color: #1a365d;
+  }
+  
+  .appointment-button:hover {
+    background-color: #2f855a;
+  }

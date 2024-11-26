@@ -1,0 +1,129 @@
+.appointments-list {
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .appointments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .appointment-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .appointment-header h3 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.1rem;
+  }
+  
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .status-badge.pending {
+    background: #feebc8;
+    color: #c05621;
+  }
+  
+  .status-badge.confirmed {
+    background: #c6f6d5;
+    color: #2f855a;
+  }
+  
+  .status-badge.cancelled {
+    background: #fed7d7;
+    color: #c53030;
+  }
+  
+  .appointment-details {
+    margin: 1rem 0;
+  }
+  
+  .appointment-details p {
+    margin: 0.5rem 0;
+    color: #4a5568;
+  }
+  
+  .appointment-date {
+    color: #2c5282;
+    font-weight: 500;
+  }
+  
+  .appointment-notes {
+    font-style: italic;
+    color: #718096;
+    font-size: 0.9rem;
+  }
+  
+  .appointment-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .confirm-button,
+  .cancel-button {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .confirm-button {
+    background: #48bb78;
+    color: white;
+    border: none;
+  }
+  
+  .confirm-button:hover {
+    background: #38a169;
+  }
+  
+  .cancel-button {
+    background: white;
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+  }
+  
+  .cancel-button:hover {
+    background: #e53e3e;
+    color: white;
+  }
+  
+  .no-appointments {
+    text-align: center;
+    padding: 2rem;
+    color: #718096;
+    font-size: 1.1rem;
+  }
+  
+  .loading,
+  .error-message {
+    text-align: center;
+    padding: 2rem;
+    color: #718096;
+  }
+  
+  .error-message {
+    color: #e53e3e;
+  }

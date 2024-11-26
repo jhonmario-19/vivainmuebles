@@ -1,0 +1,62 @@
+/* Path: client/src/styles/components/FavoriteButton.css */
+
+.favorite-button {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .favorite-button:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+  .favorite-button .favorite-icon {
+    font-size: 1.2rem;
+    color: #718096;
+    transition: color 0.2s ease;
+  }
+  
+  .favorite-button .favorite-icon.filled {
+    color: #e53e3e;
+  }
+  
+  .favorite-button:hover .favorite-icon {
+    color: #2c5282;
+  }
+  
+  .favorite-button:hover .favorite-icon.filled {
+    color: #c53030;
+  }
+  
+  .favorite-button.is-favorite {
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  /* Estilos para el estado activo */
+  .favorite-button:active {
+    transform: scale(0.95);
+  }
+  
+  /* Estilos para dispositivos móviles */
+  @media (max-width: 768px) {
+    .favorite-button {
+      width: 32px;
+      height: 32px;
+      padding: 6px;
+    }
+  
+    .favorite-button .favorite-icon {
+      font-size: 1rem;
+    }
+  }
