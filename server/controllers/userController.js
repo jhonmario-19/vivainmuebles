@@ -4,8 +4,6 @@ const db = require('../config/database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET; // En producción, usar variables de entorno
-
 const userController = {
   register: async (req, res) => {
     try {
@@ -70,7 +68,7 @@ const userController = {
           email: user.email,
           role: user.role 
         },
-        JWT_SECRET,
+        process.env.JWT_SECRET || 'tu_clave_secreta',
         { expiresIn: '24h' }
       );
 
@@ -89,6 +87,25 @@ const userController = {
     } catch (error) {
       console.error('Error en login:', error);
       res.status(500).json({ error: 'Error en el servidor' });
+    }
+  },
+
+  getProfile: async (req, res) => {
+    try {
+      const [users] = await db.execute(
+        'SELECT id, name, email, role, phone, address FROM users WHERE id = ?',
+        [req.user.id]
+      );
+
+      if (users.length === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      const user = users[0];
+      res.json(user);
+    } catch (error) {
+      console.error('Error al obtener perfil:', error);
+      res.status(500).json({ error: 'Error al obtener el perfil del usuario' });
     }
   }
 };

@@ -15,6 +15,7 @@ import EditProperty from './components/properties/EditProperty';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import AppointmentsManagement from './pages/AppointmentsManagement';
 import Favorites from './pages/Favorites';
+import PaymentPage from './pages/PaymentPage';
 import './styles/App.css';
 import './styles/index.css';
 
@@ -74,6 +75,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Favorites />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/property/:id/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage />
                 </ProtectedRoute>
               }
             />     

@@ -59,6 +59,27 @@ CREATE TABLE appointments (
     FOREIGN KEY (seller_id) REFERENCES users(id)
 );
 
+
+
+CREATE TABLE payments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    property_id INT NOT NULL,
+    user_id INT NOT NULL,
+    amount DECIMAL(15,2) NOT NULL,
+    payment_date DATETIME NOT NULL,
+    status ENUM('completed', 'failed', 'pending') DEFAULT 'completed',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (property_id) REFERENCES properties(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+ALTER TABLE properties 
+MODIFY COLUMN status ENUM('for_sale', 'for_rent', 'sold', 'rented', 'occupied') DEFAULT 'for_sale';
+
+ALTER TABLE properties 
+MODIFY COLUMN status ENUM('for_sale', 'for_rent', 'sold', 'rented', 'occupied') DEFAULT 'for_sale';
+
+
 -- Insertar algunos datos de ejemplo
 INSERT INTO properties (title, description, price, location, area, bedrooms, bathrooms, property_type, image_url) VALUES
 ('Modern Apartment in City Center', 'Beautiful modern apartment with great views', 250000.00, 'Downtown', 85.5, 2, 2, 'apartment', '/images/apartment1.jpg'),

@@ -8,6 +8,7 @@ const propertyRoutes = require('./routes/propertyRoutes');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 const path = require('path');
 
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/favorites', require('./routes/favoriteRoutes'));
+app.use('/api/payments', paymentRoutes); 
 
 
 // Ruta de prueba
