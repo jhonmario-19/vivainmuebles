@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { formatPrice } from '../utils/formatters';
+//import { formatPrice } from '../utils/formatters';
 import '../styles/pages/PropertyDetails.css';
 import Loading from '../components/common/Loading';
 import ContactForm from '../components/properties/ContactForm';

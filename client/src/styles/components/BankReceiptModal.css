@@ -1,0 +1,155 @@
+/* Path: client/src/styles/components/BankReceiptModal.css */
+
+.bank-receipt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+  
+  .bank-receipt-container {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .bank-receipt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .bank-receipt-header h2 {
+    margin: 0;
+    color: #2d3748;
+  }
+  
+  .bank-receipt-content {
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 2rem;
+  }
+  
+  .company-info {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .company-info h1 {
+    color: #2c5282;
+    margin-bottom: 0.5rem;
+  }
+  
+  .receipt-details {
+    margin-bottom: 2rem;
+  }
+  
+  .receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+  
+  .property-details,
+  .payment-instructions {
+    margin-bottom: 2rem;
+  }
+  
+  .property-details h3,
+  .payment-instructions h3 {
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .important {
+    color: #c53030;
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  
+  .receipt-footer {
+    text-align: center;
+    color: #718096;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .receipt-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+  
+  .print-button,
+  .close-receipt-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .print-button {
+    background-color: #2c5282;
+    color: white;
+    border: none;
+  }
+  
+  .print-button:hover {
+    background-color: #1a365d;
+  }
+  
+  .close-receipt-button {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    color: #4a5568;
+  }
+  
+  .close-receipt-button:hover {
+    background-color: #f7fafc;
+  }
+  
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #printable-area,
+    #printable-area * {
+      visibility: visible;
+    }
+    #printable-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+    .receipt-actions {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .bank-receipt-container {
+      padding: 1rem;
+      margin: 1rem;
+    }
+  }

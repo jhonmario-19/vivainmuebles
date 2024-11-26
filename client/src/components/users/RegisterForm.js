@@ -1,6 +1,6 @@
 // Path: client/src/components/users/RegisterForm.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/forms/RegisterForm.css';
@@ -30,8 +30,8 @@ const RegisterForm = () => {
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/
   };
 
-  // Función para validar la contraseña
-  const validatePassword = (password) => {
+  // Función para validar la contraseña usando useCallback
+  const validatePassword = useCallback((password) => {
     const errors = {};
 
     if (!password || password.length < passwordRules.minLength) {
@@ -51,7 +51,7 @@ const RegisterForm = () => {
     }
 
     return errors;
-  };
+  }, [passwordRules]);
 
   // Calcular la fortaleza de la contraseña
   const calculatePasswordStrength = (password) => {
@@ -94,7 +94,7 @@ const RegisterForm = () => {
     };
 
     checkFormValidity();
-  }, [formData]);
+  }, [formData, validatePassword]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

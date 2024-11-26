@@ -1,74 +1,153 @@
+/* Path: client/src/styles/common/Header.css */
 
 .header {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-  
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 0.8rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  text-decoration: none;
+}
+
+.logo-text {
+  color: #0A3A2A;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.nav-menu {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #4a5568;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-link:hover {
+  color: #0A3A2A;
+  background-color: rgba(10, 58, 42, 0.05);
+}
+
+.nav-link i {
+  font-size: 1.1rem;
+}
+
+.seller-menu,
+.buyer-menu {
+  display: flex;
+  gap: 1rem;
+}
+
+.logout-button {
+  background-color: #0A3A2A;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #072a1e;
+  transform: translateY(-1px);
+}
+
+/* Estilos para el menú responsive */
+@media (max-width: 768px) {
   .header .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2c5282;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .logo:hover {
-    color: #1a365d;
-  }
-  
-  nav ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 2rem;
-  }
-  
-  nav a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: color 0.3s ease;
-  }
-  
-  nav a:hover {
-    color: #2c5282;
-  }
-  
-  .logout-button {
-    background: none;
-    border: none;
-    color: #333;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    transition: color 0.3s ease;
-  }
-  
-  .logout-button:hover {
-    color: #2c5282;
-  }
-  
-  @media (max-width: 768px) {
-    nav ul {
-      gap: 1rem;
-    }
-    
-    .header .container {
       flex-direction: column;
-      gap: 1rem;
-    }
+      padding: 1rem;
   }
+
+  .nav-list {
+      flex-direction: column;
+      width: 100%;
+      gap: 0.5rem;
+      margin-top: 1rem;
+  }
+
+  .nav-item {
+      width: 100%;
+  }
+
+  .nav-link {
+      width: 100%;
+      justify-content: center;
+      padding: 0.8rem;
+  }
+
+  .seller-menu,
+  .buyer-menu {
+      flex-direction: column;
+      width: 100%;
+      gap: 0.5rem;
+  }
+
+  .logout-button {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.5rem;
+  }
+}
+
+/* Efecto hover para los botones de acción */
+.nav-link.action-button {
+  background-color: #FFD700;
+  color: #0A3A2A;
+}
+
+.nav-link.action-button:hover {
+  background-color: #ffd900;
+  transform: translateY(-1px);
+}
+
+/* Indicador de estado activo */
+.nav-link.active {
+  background-color: rgba(10, 58, 42, 0.1);
+  color: #0A3A2A;
+}
+
+/* Añadir íconos de Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');

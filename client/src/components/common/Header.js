@@ -19,41 +19,60 @@ const Header = () => {
     <header className="header">
       <div className="container">
         <Link to="/" className="logo">
-          VivaInmuebles
+          <h1 className="logo-text">VivaInmuebles</h1>
         </Link>
-        <nav>
-          <ul>
-            <li><Link to="/properties">Propiedades</Link></li>
+        <nav className="nav-menu">
+          <ul className="nav-list">
+            <li className="nav-item">
+              <Link to="/properties" className="nav-link">Propiedades</Link>
+            </li>
+            
             {!token ? (
               <>
-                <li><Link to="/login">Iniciar Sesión</Link></li>
-                <li><Link to="/register">Registrarse</Link></li>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link">Iniciar Sesión</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/register" className="nav-link">Registrarse</Link>
+                </li>
               </>
             ) : (
               <>
-                {userRole === 'seller' && (
-                  <>
-                    <li>
-                      <Link to="/publish-property">Publicar Propiedad</Link>
+                {userRole === 'seller' ? (
+                  <div className="seller-menu">
+                    <li className="nav-item">
+                      <Link to="/publish-property" className="nav-link">
+                        <i className="fas fa-plus-circle"></i> Publicar
+                      </Link>
                     </li>
-                    <li>
-                      <Link to="/my-properties">Mis Propiedades</Link>
+                    <li className="nav-item">
+                      <Link to="/my-properties" className="nav-link">
+                        <i className="fas fa-home"></i> Mis Propiedades
+                      </Link>
                     </li>
-                    <li>
-                      <Link to="/appointments">Gestionar Citas</Link>
+                    <li className="nav-item">
+                      <Link to="/appointments" className="nav-link">
+                        <i className="fas fa-calendar"></i> Citas
+                      </Link>
                     </li>
-                  </>
+                  </div>
+                ) : (
+                  <div className="buyer-menu">
+                    <li className="nav-item">
+                      <Link to="/appointments" className="nav-link">
+                        <i className="fas fa-calendar"></i> Mis Citas
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to="/favorites" className="nav-link">
+                        <i className="fas fa-heart"></i> Favoritos
+                      </Link>
+                    </li>
+                  </div>
                 )}
-                {userRole === 'buyer' && (
-                  <li>
-                    <Link to="/appointments">Mis Citas</Link>
-                    <Link to="/favorites">Mis Favoritos</Link>
-                  </li>
-                  
-                )}
-                <li>
+                <li className="nav-item">
                   <button onClick={handleLogout} className="logout-button">
-                    Cerrar Sesión
+                    <i className="fas fa-sign-out-alt"></i> Cerrar Sesión
                   </button>
                 </li>
               </>
