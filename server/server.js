@@ -26,7 +26,9 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/favorites', require('./routes/favoriteRoutes'));
 app.use('/api/payments', paymentRoutes); 
-
+app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/reports', require('./routes/reportRoutes'));
+app.use('/api/contracts', require('./routes/contractRoutes'));
 
 // Ruta de prueba
 app.get('/api/test', (req, res) => {

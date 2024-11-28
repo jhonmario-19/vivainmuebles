@@ -73,6 +73,34 @@ CREATE TABLE payments (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    message TEXT NOT NULL,
+    related_id INT,
+    read_at DATETIME DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE contact_requests (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    property_id INT NOT NULL,
+    user_id INT NOT NULL, 
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (property_id) REFERENCES properties(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Agregar columna views a la tabla properties si no existe
+ALTER TABLE properties 
+ADD COLUMN views INT DEFAULT 0;
+
 ALTER TABLE properties 
 MODIFY COLUMN status ENUM('for_sale', 'for_rent', 'sold', 'rented', 'occupied') DEFAULT 'for_sale';
 

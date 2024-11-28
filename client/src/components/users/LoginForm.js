@@ -24,8 +24,6 @@ const LoginForm = () => {
     }));
   };
 
-  // Path: client/src/components/users/LoginForm.js
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -38,7 +36,7 @@ const LoginForm = () => {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('userRole', response.data.user.role);
         
-        const { state } = location; // Usa location de useLocation
+        const { state } = location;
         if (state?.from) {
           navigate(state.from);
         } else if (response.data.user.role === 'seller') {
@@ -48,7 +46,6 @@ const LoginForm = () => {
         }
       }
     } catch (err) {
-      console.error('Error de inicio de sesión:', err);
       setError('Correo electrónico o contraseña incorrectos');
     } finally {
       setLoading(false);
@@ -56,51 +53,67 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="form-container">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h2 className="form-title">Iniciar Sesión</h2>
-
-        <div className="form-group">
-          <label htmlFor="email">Correo Electrónico</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+    <div className="login-container">
+      <div className="login-box">
+        <div className="login-header">
+          <h2>Iniciar Sesión</h2>
+          <p>¡Bienvenido de nuevo!</p>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Contraseña</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="email">Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="tu@email.com"
+              className="form-input"
+            />
+          </div>
 
-        {error && <div className="error-message">{error}</div>}
-
-        <button type="submit" disabled={loading} className="submit-button">
-          {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-        </button>
-
-        <div className="form-footer">
-          <div className="form-links">
-            <Link to="/forgot-password" className="forgot-password-link">
+          <div className="form-group">
+            <label htmlFor="password">Contraseña</label>
+            <div className="password-input-container">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="Tu contraseña"
+                className="form-input"
+              />
+            </div>
+            <Link to="/forgot-password" className="forgot-password">
               ¿Olvidaste tu contraseña?
             </Link>
-            <p className="register-text">
-              ¿No tienes una cuenta? <Link to="/register">Regístrate</Link>
+          </div>
+
+          {error && <div className="error-message">{error}</div>}
+
+          <button 
+            type="submit" 
+            disabled={loading} 
+            className="submit-button"
+          >
+            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+          </button>
+
+          <div className="form-footer">
+            <p>
+              ¿No tienes una cuenta? {' '}
+              <Link to="/register" className="register-link">
+                Regístrate aquí
+              </Link>
             </p>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

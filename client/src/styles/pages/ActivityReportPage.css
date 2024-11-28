@@ -1,0 +1,23 @@
+/* Path: client/src/styles/pages/ActivityReportPage.css */
+
+.activity-report-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .page-title {
+    color: #2d3748;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .container {
+    width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .activity-report-page {
+      padding: 1rem;
+    }
+  }

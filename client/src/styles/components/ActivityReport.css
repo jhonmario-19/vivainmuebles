@@ -1,0 +1,116 @@
+/* Path: client/src/styles/components/ActivityReport.css */
+
+.activity-report {
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .report-header h2 {
+    color: #2d3748;
+    margin: 0;
+  }
+  
+  .date-range-selector {
+    min-width: 150px;
+  }
+  
+  .date-select {
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 100%;
+  }
+  
+  .statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stat-card {
+    background: #f7fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .stat-icon {
+    font-size: 2rem;
+    color: #2c5282;
+  }
+  
+  .stat-content h3 {
+    color: #4a5568;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  .stat-number {
+    color: #2d3748;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0.25rem 0 0 0;
+  }
+  
+  .property-details-section {
+    margin-top: 2rem;
+  }
+  
+  .property-details-section h3 {
+    color: #2d3748;
+    margin-bottom: 1rem;
+  }
+  
+  .property-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .property-table th,
+  .property-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .property-table th {
+    background: #f7fafc;
+    font-weight: 500;
+    color: #4a5568;
+  }
+  
+  .property-table tr:hover {
+    background: #f7fafc;
+  }
+  
+  @media (max-width: 768px) {
+    .activity-report {
+      padding: 1rem;
+    }
+  
+    .statistics-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .property-table {
+      display: block;
+      overflow-x: auto;
+    }
+  }

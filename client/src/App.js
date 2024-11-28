@@ -16,6 +16,8 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import AppointmentsManagement from './pages/AppointmentsManagement';
 import Favorites from './pages/Favorites';
 import PaymentPage from './pages/PaymentPage';
+import TransactionHistory from './components/transactions/TransactionHistory';
+import ActivityReportPage from './pages/ActivityReportPage';
 import './styles/App.css';
 import './styles/index.css';
 
@@ -85,7 +87,20 @@ function App() {
                   <PaymentPage />
                 </ProtectedRoute>
               }
-            />     
+            /> 
+            <Route path="/transactions" element={
+              <ProtectedRoute>
+                <TransactionHistory />
+              </ProtectedRoute>
+            } />    
+            <Route
+              path="/activity-report"
+              element={
+                <ProtectedRoute role="seller">
+                  <ActivityReportPage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/home" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

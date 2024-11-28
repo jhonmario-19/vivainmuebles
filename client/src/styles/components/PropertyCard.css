@@ -280,3 +280,20 @@
 .favorite-button:active {
   transform: scale(0.95);
 }
+
+.property-actions-top {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.property-badges {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+  align-items: center;
+}

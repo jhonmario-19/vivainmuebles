@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-//import { formatPrice } from '../utils/formatters';
 import '../styles/pages/PropertyDetails.css';
 import Loading from '../components/common/Loading';
 import ContactForm from '../components/properties/ContactForm';
 import AppointmentForm from '../components/properties/AppointmentForm';
+import SellerInfo from '../components/properties/SellerInfo';
 import { FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt } from 'react-icons/fa';
 
 const PropertyDetails = () => {
@@ -65,15 +65,15 @@ const PropertyDetails = () => {
     <div className="property-details-container">
       <div className="property-details">
         <div className="property-images">
-            <img 
-                src={property.image_url ? `http://localhost:5000${property.image_url}` : '/images/default-property.jpg'} 
-                alt={property.title}
-                className="property-main-image"
-                onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/images/default-property.jpg';
-                }}
-            />
+          <img 
+            src={property.image_url ? `http://localhost:5000${property.image_url}` : '/images/default-property.jpg'} 
+            alt={property.title}
+            className="property-main-image"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/images/default-property.jpg';
+            }}
+          />
         </div>
         
         <div className="property-info">
@@ -125,6 +125,8 @@ const PropertyDetails = () => {
             <h2>Descripción</h2>
             <p>{property.description}</p>
           </div>
+
+          {property.seller && <SellerInfo seller={property.seller} />}
 
           <div className="property-actions">
             <button 

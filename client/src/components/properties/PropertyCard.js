@@ -6,6 +6,7 @@ import { FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt, FaCreditCard, FaFileInv
 import jsPDF from 'jspdf';
 import FavoriteButton from './FavoriteButton';
 import { formatPrice } from '../../utils/formatters';
+import ShareButton from './ShareButton';
 import '../../styles/components/PropertyCard.css';
 
 const PropertyCard = ({ property }) => {
@@ -166,8 +167,11 @@ const PropertyCard = ({ property }) => {
           <span className="property-type-badge">
             {getPropertyType(property.property_type)}
           </span>
-          <div onClick={handleFavoriteClick}>
-            <FavoriteButton propertyId={property.id} />
+          <div className="property-actions-top">
+            <div onClick={handleFavoriteClick}>
+              <FavoriteButton propertyId={property.id} />
+            </div>
+            <ShareButton property={property} />
           </div>
         </div>
       </div>

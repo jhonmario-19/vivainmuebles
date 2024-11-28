@@ -1,0 +1,109 @@
+/* Path: client/src/styles/components/NotificationCenter.css */
+
+.notification-center {
+    position: relative;
+  }
+  
+  .notification-trigger {
+    background: none;
+    border: none;
+    color: #4a5568;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #e53e3e;
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .notification-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 360px;
+    max-height: 480px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden;
+  }
+  
+  .notification-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notification-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2d3748;
+  }
+  
+  .mark-all-read {
+    background: none;
+    border: none;
+    color: #2c5282;
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .notification-item:hover {
+    background-color: #f7fafc;
+  }
+  
+  .notification-item.unread {
+    background-color: #ebf8ff;
+  }
+  
+  .notification-content p {
+    margin: 0;
+    color: #4a5568;
+    font-size: 0.875rem;
+  }
+  
+  .notification-time {
+    font-size: 0.75rem;
+    color: #718096;
+    display: block;
+    margin-top: 0.25rem;
+  }
+  
+  .no-notifications {
+    padding: 2rem;
+    text-align: center;
+    color: #718096;
+  }

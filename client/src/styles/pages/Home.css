@@ -1,12 +1,142 @@
-
-
 .home-page {
   padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.home-title {
+.properties-title {
   text-align: center;
   color: #2c5282;
   margin-bottom: 2rem;
-  font-size: 2.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.search-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.search-input input:focus {
+  outline: none;
+  border-color: #2c5282;
+  box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+}
+
+.search-filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  min-width: 180px;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: white;
+  color: #4a5568;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #2c5282;
+  box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.more-filters-button {
+  padding: 0.75rem 1rem;
+  border: 1px solid #2c5282;
+  color: #2c5282;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.more-filters-button:hover {
+  background: #f7fafc;
+}
+
+.clear-filters-button {
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.clear-filters-button:hover {
+  color: #4a5568;
+}
+
+.apply-filters-button {
+  padding: 0.75rem 1.5rem;
+  background: #2c5282;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.apply-filters-button:hover {
+  background: #1a365d;
+}
+
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .home-page {
+    padding: 1rem;
+  }
+
+  .search-container {
+    padding: 1rem;
+  }
+
+  .filter-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }

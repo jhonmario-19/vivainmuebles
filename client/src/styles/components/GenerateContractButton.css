@@ -1,0 +1,29 @@
+.generate-contract-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #2c5282;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .generate-contract-button:hover {
+    background-color: #1a365d;
+    transform: translateY(-1px);
+  }
+  
+  .contract-icon {
+    font-size: 1.1rem;
+  }
+  
+  .generate-contract-button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+  }
