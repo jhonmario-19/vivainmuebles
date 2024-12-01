@@ -97,6 +97,22 @@ CREATE TABLE contact_requests (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+-- Crear tabla de preferencias de usuario
+CREATE TABLE user_preferences (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    property_type ENUM('house', 'apartment', 'land', 'commercial') NOT NULL,
+    min_price DECIMAL(15,2),
+    max_price DECIMAL(15,2),
+    location VARCHAR(200),
+    min_area DECIMAL(10,2),
+    max_area DECIMAL(10,2),
+    bedrooms INT,
+    bathrooms INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
 -- Agregar columna views a la tabla properties si no existe
 ALTER TABLE properties 
 ADD COLUMN views INT DEFAULT 0;
@@ -107,6 +123,9 @@ MODIFY COLUMN status ENUM('for_sale', 'for_rent', 'sold', 'rented', 'occupied') 
 ALTER TABLE properties 
 MODIFY COLUMN status ENUM('for_sale', 'for_rent', 'sold', 'rented', 'occupied') DEFAULT 'for_sale';
 
+ALTER TABLE payments
+ADD COLUMN card_info JSON,
+ADD COLUMN payment_type ENUM('card', 'bank_transfer', 'rent') DEFAULT 'card';
 
 -- Insertar algunos datos de ejemplo
 INSERT INTO properties (title, description, price, location, area, bedrooms, bathrooms, property_type, image_url) VALUES

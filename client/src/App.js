@@ -8,6 +8,8 @@ import Home from './pages/Home';
 import Properties from './pages/Properties';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import ForgotPassword from './components/users/ForgotPasswordForm';
+import ResetPassword from './components/users/ResetPasswordForm';
 import PublishProperty from './pages/PublishProperty';
 import PropertyManagement from './components/properties/PropertyManagement'; 
 import PropertyDetails from './pages/PropertyDetails';
@@ -32,6 +34,8 @@ function App() {
             <Route path="/properties" element={<Properties />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route
               path="/publish-property"
               element={

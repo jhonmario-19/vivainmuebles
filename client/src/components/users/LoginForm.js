@@ -89,9 +89,9 @@ const LoginForm = () => {
                 className="form-input"
               />
             </div>
-            <Link to="/forgot-password" className="forgot-password">
-              ¿Olvidaste tu contraseña?
-            </Link>
+            <div className="forgot-password-link">
+              <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
+            </div>
           </div>
 
           {error && <div className="error-message">{error}</div>}

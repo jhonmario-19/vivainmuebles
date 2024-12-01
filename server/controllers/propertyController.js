@@ -121,19 +121,25 @@ const propertyController = {
        ]
      );
 
-     const [interestedUsers] = await db.execute(
-       'SELECT user_id FROM user_preferences WHERE property_type = ?',
-       [property_type]
-     );
-
-     for (const user of interestedUsers) {
-       await notificationController.createNotification(
-         user.user_id,
-         'new_property',
-         `Nueva propiedad disponible: ${title} en ${location}`,
-         result.insertId
-       );
-     }
+      const [tables] = await db.execute(
+        "SHOW TABLES LIKE 'user_preferences'"
+      );
+      
+      if (tables.length > 0) {
+        const [interestedUsers] = await db.execute(
+          'SELECT user_id FROM user_preferences WHERE property_type = ?',
+          [property_type]
+        );
+    
+        for (const user of interestedUsers) {
+          await notificationController.createNotification(
+            user.user_id,
+            'new_property',
+            `Nueva propiedad disponible: ${title} en ${location}`,
+            result.insertId
+          );
+        }
+      }
  
      res.status(201).json({
        message: 'Propiedad creada exitosamente',
@@ -281,8 +287,8 @@ const propertyController = {
  
      res.json({ message: 'Propiedad actualizada exitosamente' });
    } catch (error) {
-     console.error('Error al actualizar propiedad:', error);
-     res.status(500).json({ error: 'Error al actualizar la propiedad' });
+    console.error('Error al crear propiedad:', error);
+    res.status(500).json({ error: 'Error al crear la propiedad' });
    }
  }
 };
