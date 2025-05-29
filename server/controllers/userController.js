@@ -16,10 +16,12 @@ const userController = {
       );
 
       if (existingUsers.length > 0) {
+        
         return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
-      }
 
-      // Encriptar contraseña
+      }else{
+
+        // Encriptar contraseña
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -33,6 +35,10 @@ const userController = {
         message: 'Usuario registrado exitosamente',
         userId: result.insertId
       });
+
+      }
+
+      
     } catch (error) {
       console.error('Error en el registro:', error);
       res.status(500).json({ error: 'Error en el servidor' });
@@ -69,7 +75,7 @@ const userController = {
           role: user.role 
         },
         process.env.JWT_SECRET || 'tu_clave_secreta',
-        { expiresIn: '24h' }
+        { expiresIn: '7d' }
       );
 
       // Enviar respuesta sin la contraseña

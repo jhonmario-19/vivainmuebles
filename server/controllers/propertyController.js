@@ -131,13 +131,15 @@ const propertyController = {
           [property_type]
         );
     
-        for (const user of interestedUsers) {
-          await notificationController.createNotification(
-            user.user_id,
-            'new_property',
-            `Nueva propiedad disponible: ${title} en ${location}`,
-            result.insertId
-          );
+        let i = 0;
+        while (i < interestedUsers.length) {
+            await notificationController.createNotification(
+              interestedUsers[i].user_id,
+              'new_property',
+              `Nueva propiedad disponible: ${title} en ${location}`,
+              result.insertId
+            );
+            i++;
         }
       }
  
