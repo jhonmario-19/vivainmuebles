@@ -1,67 +1,177 @@
+const request = require('supertest');
+const express = require('express');
+const bodyParser = require('body-parser');
 const userController = require('../controllers/userController');
 const db = require('../config/database');
-const bcrypt = require('bcryptjs');
 
-jest.mock('../config/database');
-jest.mock('bcryptjs');
+//"test": "jest",
+//"test:watch": "jest --watch"
 
-describe('Pruebas de Integracion Para Registro de Clientes', () => {
-  it('Email Unico Validado', async () => {
-    const mockReq = { 
-      body: {
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'password123',
-        role: 'user',
-        phone: '1234567890',
-        address: 'Test Address'
-      }
-    };
-    const mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    };
+// Mock de la base de datos
+jest.mock('../config/database', () => ({
+  execute: jest.fn()
+}));
 
-    // Configurar mocks para siempre pasar
-    db.execute
-      .mockResolvedValueOnce([[]]) // No existe usuario
-      .mockResolvedValueOnce([{ insertId: 1 }]); // Insert exitoso
-    
-    bcrypt.genSalt.mockResolvedValue('salt123');
-    bcrypt.hash.mockResolvedValue('hashedPassword');
+// Mock de console.error
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
 
-    await userController.register(mockReq, mockRes);
+afterAll(() => {
+  console.error.mockRestore();
+});
 
-    // Aserciones que siempre pasarán
-    expect(true).toBe(true);
+const app = express();
+app.use(bodyParser.json());
+app.post('/register', userController.register);
+
+describe('Controlador de Usuario', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
-  it('Usuario Registrado exitosamente', async () => {
-    const mockReq = { 
-      body: {
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'password123',
-        role: 'user',
-        phone: '1234567890',
-        address: 'Test Address'
-      }
-    };
-    const mockRes = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    };
 
-    // Configurar mocks para siempre pasar
-    db.execute
-      .mockResolvedValueOnce([[]]) // No existe usuario
-      .mockResolvedValueOnce([{ insertId: 1 }]); // Insert exitoso
+  describe('Registro exitoso', () => {
+    it('debe registrar un usuario correctamente', async () => {
+      db.execute
+        .mockResolvedValueOnce([[]]) // Para verificar correo existente
+        .mockResolvedValueOnce([{ insertId: 1 }]); // Para insertar usuario
+
+      const res = await request(app).post('/register').send({
+        name: "Carlos López",
+        email: "carlos.lopez@test.com", // 15+ caracteres
+        password: "Carlos123#",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Calle A #123-45, Bogotá" // 10+ caracteres
+      });
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body).toEqual({
+        message: 'Usuario registrado exitosamente',
+        userId: 1
+      });
+    });
+  });
+
+  describe('Validaciones de registro', () => {
+    it('debe rechazar registro con correo ya existente', async () => {
+      db.execute.mockResolvedValueOnce([[{ id: 1 }]]); // Simular correo existente
+
+      const res = await request(app).post('/register').send({
+        name: "Carlos López",
+        email: "carlos.existente@test.com",
+        password: "Carlos123#",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Calle A #123-45, Bogotá"
+      });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe('El correo electrónico ya está registrado');
+    });
+
+    it('debe rechazar nombre con menos de 5 caracteres', async () => {
+      const res = await request(app).post('/register').send({
+        name: "Ana",
+        email: "ana@test.com",
+        password: "Password123!",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Calle 10 #20-30"
+      });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe('El nombre debe tener entre 5 y 40 caracteres');
+    });
+
+    it('debe rechazar nombre con números', async () => {
+      const res = await request(app).post('/register').send({
+        name: "Carlos123",
+        email: "carlos@test.com",
+        password: "Password123!",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Calle 10 #20-30"
+      });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe('El nombre no puede contener números');
+    });
+
+    it('debe rechazar correo electrónico inválido', async () => {
+      const res = await request(app).post('/register').send({
+        name: "Juan Test",
+        email: "correo_invalido.com",
+        password: "Password123!",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Calle 10 #20-30"
+      });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe('Correo electrónico inválido');
+    });
+
+    it('debe rechazar correo electrónico corto', async () => {
+      const res = await request(app).post('/register').send({
+        name: "Juan Test",
+        email: "a@b.co",
+        password: "Password123!",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Calle 10 #20-30"
+      });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe('El correo electrónico debe tener entre 15 y 40 caracteres');
+    });
+
+    it('debe rechazar contraseña corta', async () => {
+      const res = await request(app).post('/register').send({
+        name: "Lucía Cortés",
+        email: "lucia@correo.com",
+        password: "abc12",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Carrera 7 #30-21"
+      });
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe('La contraseña debe tener al menos 8 caracteres');
+    });
+
+    it('debe rechazar rol inválido', async () => {
+        const res = await request(app).post('/register').send({
+        name: "Ana López",
+        email: "ana.lopez@test.com", // Correo válido de 15+ caracteres
+        password: "Password123!",
+        role: "Administrador",
+        phone: "3001234567",
+        address: "Calle 10 #20-30, Bogotá"
+        });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.error).toBe('El rol debe ser Comprador o Vendedor');
+    });
+
     
-    bcrypt.genSalt.mockResolvedValue('salt123');
-    bcrypt.hash.mockResolvedValue('hashedPassword');
+    });
 
-    await userController.register(mockReq, mockRes);
+  describe('Errores del servidor', () => {
+    it('debe manejar errores de base de datos', async () => {
+      db.execute.mockRejectedValueOnce(new Error('Fallo en DB'));
 
-    // Aserciones que siempre pasarán
-    expect(true).toBe(true);
+      const res = await request(app).post('/register').send({
+        name: "Carlos López",
+        email: "carlos@test.com",
+        password: "Carlos123#",
+        role: "Comprador",
+        phone: "3001234567",
+        address: "Calle A #123-45, Bogotá"
+      });
+
+      expect(res.statusCode).toBe(500);
+      expect(res.body.error).toBe('Error en el servidor');
+    });
   });
 });

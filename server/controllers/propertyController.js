@@ -81,6 +81,86 @@ const propertyController = {
  // Publicar una nueva propiedad
  createProperty: async (req, res) => {
    try {
+    if (!req.body.title) {
+      return res.status(400).json({ error: 'El título es requerido' });
+    }
+    if (req.body.title.length < 5) {
+      return res.status(400).json({ error: 'El título debe tener al menos 5 caracteres' });
+    }
+    if (req.body.title.length > 100) {
+      return res.status(400).json({ error: 'El título no puede exceder los 100 caracteres' });
+    }
+    if (/\d/.test(req.body.title)) {
+      return res.status(400).json({ error: 'El título no puede contener números' });
+    }
+
+    // Validaciones de descripción
+    if (!req.body.description) {
+      return res.status(400).json({ error: 'La descripción es requerida' });
+    }
+    if (req.body.description.length < 20) {
+      return res.status(400).json({ error: 'La descripción debe tener al menos 20 caracteres' });
+    }
+    if (req.body.description.length > 500) {
+      return res.status(400).json({ error: 'La descripción no puede exceder los 500 caracteres' });
+    }
+
+    // Validaciones de precio
+    if (isNaN(req.body.price)) {
+      return res.status(400).json({ error: 'El precio debe ser un número válido' });
+    }
+    if (parseFloat(req.body.price) <= 0) {
+      return res.status(400).json({ error: 'El precio debe ser mayor que cero' });
+    }
+
+    // Validaciones de área
+    if (isNaN(req.body.area)) {
+      return res.status(400).json({ error: 'El área debe ser un número válido' });
+    }
+    if (parseFloat(req.body.area) <= 0) {
+      return res.status(400).json({ error: 'El área debe ser mayor que cero' });
+    }
+
+    // Validaciones de dirección/location
+    if (!req.body.location) {
+      return res.status(400).json({ error: 'La dirección es requerida' });
+    }
+    if (req.body.location.length < 10) {
+      return res.status(400).json({ error: 'La dirección debe tener al menos 10 caracteres' });
+    }
+    if (req.body.location.length > 100) {
+      return res.status(400).json({ error: 'La dirección no puede exceder los 100 caracteres' });
+    }
+
+    // Validaciones de tipo de propiedad
+    const validPropertyTypes = ['Casa', 'Apartamento', 'Terreno', 'Comercial'];
+    if (!req.body.property_type || !validPropertyTypes.includes(req.body.property_type)) {
+      return res.status(400).json({ 
+        error: 'Tipo de propiedad inválido. Los valores válidos son: Casa, Apartamento, Terreno, Comercial' 
+      });
+    }
+
+    // Validaciones de número de habitaciones
+    if (isNaN(req.body.bedrooms) || !Number.isInteger(parseFloat(req.body.bedrooms))) {
+      return res.status(400).json({ error: 'El número de habitaciones debe ser un entero válido' });
+    }
+    if (parseInt(req.body.bedrooms) < 1) {
+      return res.status(400).json({ error: 'Debe haber al menos 1 habitación' });
+    }
+
+    // Validaciones de número de baños
+    if (isNaN(req.body.bathrooms) || !Number.isInteger(parseFloat(req.body.bathrooms))) {
+      return res.status(400).json({ error: 'El número de baños debe ser un entero válido' });
+    }
+    if (parseInt(req.body.bathrooms) < 1) {
+      return res.status(400).json({ error: 'Debe haber al menos 1 baño' });
+    }
+
+
+    // Validaciones de imágenes
+    if (!req.file) {
+      return res.status(400).json({ error: 'La imagen es requerida' });
+    }
      const {
        title,
        description,
@@ -102,24 +182,21 @@ const propertyController = {
      const numericBathrooms = parseInt(bathrooms);
  
      const [result] = await db.execute(
-       `INSERT INTO properties (
-         title, description, price, location, area, bedrooms, bathrooms, 
-         property_type, status, image_url, user_id, created_at, views
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), 0)`,
-       [
-         title,
-         description,
-         numericPrice,
-         location,
-         numericArea,
-         numericBedrooms,
-         numericBathrooms,
-         property_type,
-         status,
-         image_url,
-         userId
-       ]
-     );
+        'INSERT INTO properties (title, description, price, location, area, bedrooms, bathrooms, property_type, status, image_url, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          req.body.title,
+          req.body.description,
+          req.body.price,
+          req.body.location,
+          req.body.area,
+          req.body.bedrooms,
+          req.body.bathrooms,
+          req.body.property_type,
+          req.body.status,
+          req.file.filename,
+          req.user.id
+        ]
+      );
 
       const [tables] = await db.execute(
         "SHOW TABLES LIKE 'user_preferences'"

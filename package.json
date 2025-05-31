@@ -1,5 +1,3 @@
-
-
 {
   "name": "vivainmuebles",
   "version": "1.0.0",
@@ -15,5 +13,11 @@
   "license": "ISC",
   "dependencies": {
     "concurrently": "^8.0.1"
+  },
+  "devDependencies": {
+    "chai": "^5.2.0",
+    "chai-http": "^5.1.2",
+    "mocha": "^11.5.0",
+    "supertest": "^7.1.1"
   }
 }

@@ -7,43 +7,66 @@ const jwt = require('jsonwebtoken');
 const userController = {
   register: async (req, res) => {
     try {
-      const { name, email, password, role, phone, address } = req.body;
+      if (!req.body.name || req.body.name.trim() === '') {
+        return res.status(400).json({ error: 'El nombre es requerido' });
+      }
+      if (/\d/.test(req.body.name)) {
+        return res.status(400).json({ error: 'El nombre no puede contener números' });
+      }
+      if (req.body.name.length < 5 || req.body.name.length > 40) {
+        return res.status(400).json({ error: 'El nombre debe tener entre 5 y 40 caracteres' });
+      }
+      
+      if (!req.body.role || !['Comprador', 'Vendedor'].includes(req.body.role)) {
+        return res.status(400).json({ error: 'El rol debe ser Comprador o Vendedor' });
+      }
+      
+      if (!req.body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email)) {
+        return res.status(400).json({ error: 'Correo electrónico inválido' });
+      }
+      if (req.body.email.length < 15 || req.body.email.length > 40) {
+        return res.status(400).json({ error: 'El correo electrónico debe tener entre 15 y 40 caracteres' });
+      }
+      
+      if (!req.body.password || req.body.password.length < 8) {
+        return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
+      }
 
       // Verificar si el correo ya existe
       const [existingUsers] = await db.execute(
-        'SELECT * FROM users WHERE email = ?',
-        [email]
+        'SELECT id FROM users WHERE email = ?', 
+        [req.body.email]
       );
 
       if (existingUsers.length > 0) {
-        
         return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
-
-      }else{
-
-        // Encriptar contraseña
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      // Insertar nuevo usuario
-      const [result] = await db.execute(
-        'INSERT INTO users (name, email, password, role, phone, address) VALUES (?, ?, ?, ?, ?, ?)',
-        [name, email, hashedPassword, role, phone, address]
-      );
-
-      res.status(201).json({
-        message: 'Usuario registrado exitosamente',
-        userId: result.insertId
-      });
-
       }
 
-      
-    } catch (error) {
-      console.error('Error en el registro:', error);
-      res.status(500).json({ error: 'Error en el servidor' });
-    }
-  },
+      // Hash de la contraseña
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        // Insertar nuevo usuario con campos opcionales
+        const [result] = await db.execute(
+          'INSERT INTO users (name, email, password, role, phone, address) VALUES (?, ?, ?, ?, ?, ?)',
+          [
+            req.body.name.trim(),
+            req.body.email.trim(),
+            hashedPassword,
+            req.body.role,
+            req.body.phone || null,
+            req.body.address ? req.body.address.trim() : null
+          ]
+        );
+
+        res.status(201).json({
+          message: 'Usuario registrado exitosamente',
+          userId: result.insertId
+        });
+      } catch (error) {
+        console.error('Error en el registro:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+      }
+    },
 
   login: async (req, res) => {
     try {
