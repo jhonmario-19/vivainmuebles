@@ -16,7 +16,7 @@ const EditProperty = () => {
     area: '',
     bedrooms: '',
     bathrooms: '',
-    property_type: 'house',
+    property_type: 'Casa',
     status: 'for_sale',
     image_url: ''
   });

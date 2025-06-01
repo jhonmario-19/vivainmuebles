@@ -15,7 +15,7 @@ const PropertyForm = () => {
     area: '',
     bedrooms: '',
     bathrooms: '',
-    property_type: 'house',
+    property_type: 'Casa',
     status: 'for_sale',
   });
 
@@ -52,6 +52,20 @@ const PropertyForm = () => {
     setError('');
     setSuccess('');
 
+    // Validación mejorada del título
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(formData.title)) {
+      setError('El título solo puede contener letras y espacios');
+      setLoading(false);
+      return;
+    }
+
+    // Validación de números
+    if (formData.price.includes(',')) {
+      setError('Por favor usa punto (.) como separador decimal');
+      setLoading(false);
+      return;
+    }
+
     if (!image) {
       setError('Por favor selecciona una imagen');
       setLoading(false);
@@ -66,13 +80,19 @@ const PropertyForm = () => {
 
       const propertyData = new FormData();
       
+      // Convertir valores numéricos correctamente
+      const numericFields = ['price', 'area', 'bedrooms', 'bathrooms'];
       Object.keys(formData).forEach(key => {
-        propertyData.append(key, formData[key]);
+        let value = formData[key];
+        if (numericFields.includes(key)) {
+          value = value.toString().replace(',', '.');
+        }
+        propertyData.append(key, value);
       });
 
       propertyData.append('image', image);
 
-      await axios.post(
+      const response = await axios.post(
         'http://localhost:5000/api/properties',
         propertyData,
         {
@@ -90,11 +110,15 @@ const PropertyForm = () => {
       
     } catch (err) {
       console.error('Error al publicar:', err);
-      setError(err.response?.data?.error || 'Error al publicar la propiedad');
+      const errorMessage = err.response?.data?.error || 
+                          err.response?.data?.message || 
+                          'Error al publicar la propiedad';
+      setError(`${errorMessage}${err.response?.data?.details ? `: ${err.response.data.details}` : ''}`);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="property-form-container">
@@ -214,10 +238,10 @@ const PropertyForm = () => {
               onChange={handleChange}
               required
             >
-              <option value="house">Casa</option>
-              <option value="apartment">Apartamento</option>
-              <option value="land">Terreno</option>
-              <option value="commercial">Comercial</option>
+              <option value="Casa">Casa</option>
+              <option value="Apartamento">Apartamento</option>
+              <option value="Terreno">Terreno</option>
+              <option value="Comercial">Comercial</option>
             </select>
           </div>
 

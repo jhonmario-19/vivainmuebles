@@ -1,12 +1,12 @@
-const propertyController = require('../controllers/propertyController');
-const db = require('../config/database');
-const notificationController = require('../controllers/notificationController');
+const propertyController = require('../../controllers/propertyController');
+const db = require('../../config/database');
+const notificationController = require('../../controllers/notificationController');
 
-jest.mock('../config/database', () => ({
+jest.mock('../../config/database', () => ({
   execute: jest.fn()
 }));
 
-jest.mock('../controllers/notificationController', () => ({
+jest.mock('../../controllers/notificationController', () => ({
   createNotification: jest.fn()
 }));
 

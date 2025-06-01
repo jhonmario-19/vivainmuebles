@@ -81,6 +81,7 @@ const propertyController = {
  // Publicar una nueva propiedad
  createProperty: async (req, res) => {
    try {
+    // Validaciones de título
     if (!req.body.title) {
       return res.status(400).json({ error: 'El título es requerido' });
     }
@@ -90,8 +91,8 @@ const propertyController = {
     if (req.body.title.length > 100) {
       return res.status(400).json({ error: 'El título no puede exceder los 100 caracteres' });
     }
-    if (/\d/.test(req.body.title)) {
-      return res.status(400).json({ error: 'El título no puede contener números' });
+    if (/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(req.body.title)) {
+      return res.status(400).json({ error: 'El título solo puede contener letras y espacios' });
     }
 
     // Validaciones de descripción
@@ -106,7 +107,7 @@ const propertyController = {
     }
 
     // Validaciones de precio
-    if (isNaN(req.body.price)) {
+    if (!req.body.price || isNaN(req.body.price)) {
       return res.status(400).json({ error: 'El precio debe ser un número válido' });
     }
     if (parseFloat(req.body.price) <= 0) {
@@ -114,7 +115,7 @@ const propertyController = {
     }
 
     // Validaciones de área
-    if (isNaN(req.body.area)) {
+    if (!req.body.area || isNaN(req.body.area)) {
       return res.status(400).json({ error: 'El área debe ser un número válido' });
     }
     if (parseFloat(req.body.area) <= 0) {
@@ -133,15 +134,15 @@ const propertyController = {
     }
 
     // Validaciones de tipo de propiedad
-    const validPropertyTypes = ['Casa', 'Apartamento', 'Terreno', 'Comercial'];
-    if (!req.body.property_type || !validPropertyTypes.includes(req.body.property_type)) {
-      return res.status(400).json({ 
-        error: 'Tipo de propiedad inválido. Los valores válidos son: Casa, Apartamento, Terreno, Comercial' 
-      });
-    }
+    const validPropertyTypes = ['casa', 'apartamento', 'terreno', 'comercial']; // en minúsculas
+      if (!req.body.property_type || !validPropertyTypes.includes(req.body.property_type.toLowerCase())) {
+        return res.status(400).json({ 
+          error: 'Tipo de propiedad inválido. Los valores válidos son: Casa, Apartamento, Terreno, Comercial' 
+        });
+      }
 
     // Validaciones de número de habitaciones
-    if (isNaN(req.body.bedrooms) || !Number.isInteger(parseFloat(req.body.bedrooms))) {
+    if (!req.body.bedrooms || isNaN(req.body.bedrooms) || !Number.isInteger(parseFloat(req.body.bedrooms))) {
       return res.status(400).json({ error: 'El número de habitaciones debe ser un entero válido' });
     }
     if (parseInt(req.body.bedrooms) < 1) {
@@ -149,84 +150,95 @@ const propertyController = {
     }
 
     // Validaciones de número de baños
-    if (isNaN(req.body.bathrooms) || !Number.isInteger(parseFloat(req.body.bathrooms))) {
+    if (!req.body.bathrooms || isNaN(req.body.bathrooms) || !Number.isInteger(parseFloat(req.body.bathrooms))) {
       return res.status(400).json({ error: 'El número de baños debe ser un entero válido' });
     }
     if (parseInt(req.body.bathrooms) < 1) {
       return res.status(400).json({ error: 'Debe haber al menos 1 baño' });
     }
 
-
     // Validaciones de imágenes
     if (!req.file) {
       return res.status(400).json({ error: 'La imagen es requerida' });
     }
-     const {
-       title,
-       description,
-       price,
-       location,
-       area,
-       bedrooms,
-       bathrooms,
-       property_type,
-       status,
-     } = req.body;
- 
-     const userId = req.user.id;
-     const image_url = req.file ? `/uploads/${req.file.filename}` : null;
- 
-     const numericPrice = parseFloat(price);
-     const numericArea = parseFloat(area);
-     const numericBedrooms = parseInt(bedrooms);
-     const numericBathrooms = parseInt(bathrooms);
- 
-     const [result] = await db.execute(
-        'INSERT INTO properties (title, description, price, location, area, bedrooms, bathrooms, property_type, status, image_url, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-          req.body.title,
-          req.body.description,
-          req.body.price,
-          req.body.location,
-          req.body.area,
-          req.body.bedrooms,
-          req.body.bathrooms,
-          req.body.property_type,
-          req.body.status,
-          req.file.filename,
-          req.user.id
-        ]
-      );
 
-      const [tables] = await db.execute(
-        "SHOW TABLES LIKE 'user_preferences'"
-      );
-      
-      if (tables.length > 0) {
-        const [interestedUsers] = await db.execute(
-          'SELECT user_id FROM user_preferences WHERE property_type = ?',
-          [property_type]
-        );
-    
-        let i = 0;
-        while (i < interestedUsers.length) {
-            await notificationController.createNotification(
-              interestedUsers[i].user_id,
-              'new_property',
-              `Nueva propiedad disponible: ${title} en ${location}`,
-              result.insertId
-            );
-            i++;
-        }
-      }
- 
+    // Extraer y validar datos
+    const {
+      title,
+      description,
+      price,
+      location,
+      area,
+      bedrooms,
+      bathrooms,
+      property_type,
+      status = 'for_sale' // Valor por defecto si no se proporciona
+    } = req.body;
+
+    const userId = req.user.id;
+    const image_url = req.file.filename; // Solo el nombre del archivo
+
+    // Convertir a tipos numéricos
+    const numericPrice = parseFloat(price.replace(',', '.'));
+    const numericArea = parseFloat(area.replace(',', '.'));
+    const numericBedrooms = parseInt(bedrooms);
+    const numericBathrooms = parseInt(bathrooms);
+
+    // Insertar en la base de datos usando las variables convertidas
+    const [result] = await db.execute(
+       'INSERT INTO properties (title, description, price, location, area, bedrooms, bathrooms, property_type, status, image_url, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+       [
+         title,
+         description,
+         numericPrice,
+         location,
+         numericArea,
+         numericBedrooms,
+         numericBathrooms,
+         property_type,
+         status,
+         image_url,
+         userId
+       ]
+     );
+
+     // Notificar a usuarios interesados (solo si la tabla existe)
+     try {
+       const [tables] = await db.execute(
+         "SHOW TABLES LIKE 'user_preferences'"
+       );
+       
+       if (tables.length > 0) {
+         const [interestedUsers] = await db.execute(
+           'SELECT user_id FROM user_preferences WHERE property_type = ?',
+           [property_type]
+         );
+     
+         for (const user of interestedUsers) {
+           await notificationController.createNotification(
+             user.user_id,
+             'new_property',
+             `Nueva propiedad disponible: ${title} en ${location}`,
+             result.insertId
+           );
+         }
+       }
+     } catch (notificationError) {
+       console.error('Error al enviar notificaciones:', notificationError);
+       // No fallar la creación de la propiedad por un error de notificación
+     }
+
      res.status(201).json({
        message: 'Propiedad creada exitosamente',
        propertyId: result.insertId
      });
    } catch (error) {
      console.error('Error al crear propiedad:', error);
-     res.status(500).json({ error: 'Error al crear la propiedad' });
+     res.status(500).json({ 
+      error: 'Error al crear la propiedad',
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
    }
  },
 
@@ -242,20 +254,26 @@ const propertyController = {
        return res.status(404).json({ error: 'Propiedad no encontrada' });
      }
 
-     const [favoritedBy] = await db.execute(
-       'SELECT user_id FROM favorites WHERE property_id = ?',
-       [req.params.id]
-     );
-
-     for (const user of favoritedBy) {
-       await notificationController.createNotification(
-         user.user_id,
-         'property_removed',
-         `Una propiedad en tus favoritos ya no está disponible: ${property[0].title}`,
-         null
+     // Notificar a usuarios que tienen la propiedad en favoritos
+     try {
+       const [favoritedBy] = await db.execute(
+         'SELECT user_id FROM favorites WHERE property_id = ?',
+         [req.params.id]
        );
+
+       for (const user of favoritedBy) {
+         await notificationController.createNotification(
+           user.user_id,
+           'property_removed',
+           `Una propiedad en tus favoritos ya no está disponible: ${property[0].title}`,
+           null
+         );
+       }
+     } catch (notificationError) {
+       console.error('Error al enviar notificaciones:', notificationError);
      }
  
+     // Eliminar registros relacionados
      await db.execute(
        'DELETE FROM appointments WHERE property_id = ?',
        [req.params.id]
@@ -296,7 +314,7 @@ const propertyController = {
      let imageUrl = property[0].image_url;
  
      if (req.file) {
-       imageUrl = `/uploads/${req.file.filename}`;
+       imageUrl = req.file.filename; // Solo el nombre del archivo
      }
  
      const {
@@ -320,11 +338,11 @@ const propertyController = {
        [
          title,
          description,
-         price,
+         parseFloat(price),
          location,
-         area,
-         bedrooms,
-         bathrooms,
+         parseFloat(area),
+         parseInt(bedrooms),
+         parseInt(bathrooms),
          property_type,
          status,
          imageUrl,
@@ -333,41 +351,47 @@ const propertyController = {
        ]
      );
 
-     const [favorites] = await db.execute(
-       'SELECT user_id FROM favorites WHERE property_id = ?',
-       [propertyId]
-     );
-
-     for (const favorite of favorites) {
-       await notificationController.createNotification(
-         favorite.user_id,
-         'property_update',
-         `Una propiedad en tus favoritos ha sido actualizada: ${title}`,
-         propertyId
-       );
-     }
-
-     if (status === 'sold' || status === 'rented') {
-       const [interestedUsers] = await db.execute(
-         'SELECT DISTINCT user_id FROM appointments WHERE property_id = ? AND user_id != ?',
-         [propertyId, userId]
+     // Notificar a usuarios que tienen la propiedad en favoritos
+     try {
+       const [favorites] = await db.execute(
+         'SELECT user_id FROM favorites WHERE property_id = ?',
+         [propertyId]
        );
 
-       const statusText = status === 'sold' ? 'vendida' : 'rentada';
-       for (const user of interestedUsers) {
+       for (const favorite of favorites) {
          await notificationController.createNotification(
-           user.user_id,
-           'property_status_change',
-           `La propiedad ${title} ha sido ${statusText}`,
+           favorite.user_id,
+           'property_update',
+           `Una propiedad en tus favoritos ha sido actualizada: ${title}`,
            propertyId
          );
        }
+
+       // Notificar cambio de estado si la propiedad fue vendida o rentada
+       if (status === 'sold' || status === 'rented') {
+         const [interestedUsers] = await db.execute(
+           'SELECT DISTINCT user_id FROM appointments WHERE property_id = ? AND user_id != ?',
+           [propertyId, userId]
+         );
+
+         const statusText = status === 'sold' ? 'vendida' : 'rentada';
+         for (const user of interestedUsers) {
+           await notificationController.createNotification(
+             user.user_id,
+             'property_status_change',
+             `La propiedad ${title} ha sido ${statusText}`,
+             propertyId
+           );
+         }
+       }
+     } catch (notificationError) {
+       console.error('Error al enviar notificaciones:', notificationError);
      }
  
      res.json({ message: 'Propiedad actualizada exitosamente' });
    } catch (error) {
-    console.error('Error al crear propiedad:', error);
-    res.status(500).json({ error: 'Error al crear la propiedad' });
+     console.error('Error al actualizar propiedad:', error);
+     res.status(500).json({ error: 'Error al actualizar la propiedad' });
    }
  }
 };

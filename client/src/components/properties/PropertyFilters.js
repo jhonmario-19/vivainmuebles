@@ -71,10 +71,10 @@ const PropertyFilters = ({ onFilterChange }) => {
               className="filter-select"
             >
               <option value="">Tipo de Propiedad</option>
-              <option value="house">Casa</option>
-              <option value="apartment">Apartamento</option>
-              <option value="commercial">Comercial</option>
-              <option value="land">Terreno</option>
+              <option value="Casa">Casa</option>
+              <option value="Apartamento">Apartamento</option>
+              <option value="Terreno">Terreno</option>
+              <option value="Comercial">Comercial</option>
             </select>
 
             <select

@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../server'); // Asegúrate que server.js exporte la app
-const db = require('../config/database');
+const app = require('../../server'); // Asegúrate que server.js exporte la app
+const db = require('../../config/database');
 
 chai.use(chaiHttp);
 const expect = chai.expect;

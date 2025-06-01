@@ -1,14 +1,17 @@
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
-const userController = require('../controllers/userController');
-const db = require('../config/database');
+const userController = require('../../controllers/userController');
+const db = require('../../config/database');
 
 //"test": "jest",
 //"test:watch": "jest --watch"
 
+// "test": "mocha test/user.test.js --timeout 10000",
+// "test:watch": "mocha test/user.test.js --watch --timeout 10000"
+
 // Mock de la base de datos
-jest.mock('../config/database', () => ({
+jest.mock('../../config/database', () => ({
   execute: jest.fn()
 }));
 
