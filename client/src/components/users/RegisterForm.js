@@ -12,7 +12,7 @@ const RegisterForm = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'buyer',
+    role: 'Comprador',
     phone: '',
     address: ''
   });
@@ -149,7 +149,7 @@ const RegisterForm = () => {
       });
 
       if (response.data) {
-        alert('Registro exitoso');
+        <div id="message">Registro exitoso</div>
         navigate('/login');
       }
     } catch (err) {
@@ -172,8 +172,8 @@ const RegisterForm = () => {
         
         <div className="role-selector">
           <div 
-            className={`role-option ${formData.role === 'buyer' ? 'selected' : ''}`}
-            onClick={() => setFormData(prev => ({ ...prev, role: 'buyer' }))}
+            className={`role-option ${formData.role === 'Comprador' ? 'selected' : ''}`}
+            onClick={() => setFormData(prev => ({ ...prev, role: 'Comprador' }))}
           >
             <span className="role-icon">🏠</span>
             <h3>Comprador</h3>
@@ -181,8 +181,8 @@ const RegisterForm = () => {
           </div>
           
           <div 
-            className={`role-option ${formData.role === 'seller' ? 'selected' : ''}`}
-            onClick={() => setFormData(prev => ({ ...prev, role: 'seller' }))}
+            className={`role-option ${formData.role === 'Vendedor' ? 'selected' : ''}`}
+            onClick={() => setFormData(prev => ({ ...prev, role: 'Vendedor' }))}
           >
             <span className="role-icon">🔑</span>
             <h3>Vendedor</h3>

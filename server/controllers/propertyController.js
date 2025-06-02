@@ -176,7 +176,7 @@ const propertyController = {
     } = req.body;
 
     const userId = req.user.id;
-    const image_url = req.file.filename; // Solo el nombre del archivo
+    const image_url = req.file ? `/uploads/${req.file.filename}` : null; // Solo el nombre del archivo
 
     // Convertir a tipos numéricos
     const numericPrice = parseFloat(price.replace(',', '.'));
