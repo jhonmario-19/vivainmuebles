@@ -25,7 +25,16 @@ const TransactionHistory = () => {
       });
       setTransactions(response.data);
     } catch (err) {
-      setError('Error al cargar el historial de transacciones');
+      console.error('Error al cargar el historial de transacciones:', err);
+      setError(
+        err.response?.data?.message || 
+        'No se pudo cargar el historial de transacciones. Por favor, intente nuevamente.'
+      );
+
+      // Manejar específicamente errores de autenticación
+      if (err.response?.status === 401) {
+        setError('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+      }
     } finally {
       setLoading(false);
     }

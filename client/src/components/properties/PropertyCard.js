@@ -8,6 +8,7 @@ import FavoriteButton from './FavoriteButton';
 import { formatPrice } from '../../utils/formatters';
 import ShareButton from './ShareButton';
 import '../../styles/components/PropertyCard.css';
+import PropTypes from 'prop-types';
 
 const PropertyCard = ({ property }) => {
   const navigate = useNavigate();
@@ -168,9 +169,19 @@ const PropertyCard = ({ property }) => {
             {getPropertyType(property.property_type)}
           </span>
           <div className="property-actions-top">
-            <div onClick={handleFavoriteClick}>
+            <button
+              onClick={handleFavoriteClick}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleFavoriteClick();
+                }
+              }}
+              className="favorite-button-wrapper"
+              aria-label="Agregar a favoritos"
+              tabIndex={0}
+            >
               <FavoriteButton propertyId={property.id} />
-            </div>
+            </button>
             <ShareButton property={property} />
           </div>
         </div>
@@ -237,6 +248,21 @@ const PropertyCard = ({ property }) => {
       </div>
     </div>
   );
+};
+
+PropertyCard.propTypes = {
+  property: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    location: PropTypes.string.isRequired,
+    image_url: PropTypes.string,
+    status: PropTypes.oneOf(['for_sale', 'for_rent']).isRequired,
+    property_type: PropTypes.string.isRequired,
+    bedrooms: PropTypes.number,
+    bathrooms: PropTypes.number,
+    area: PropTypes.number
+  }).isRequired
 };
 
 export default PropertyCard;

@@ -21,7 +21,9 @@ const userController = {
         return res.status(400).json({ error: 'El rol debe ser Comprador o Vendedor' });
       }
       
-      if (!req.body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email)) {
+      if (!req.body.email || 
+          req.body.email.length > 254 || // RFC 5321 limit
+          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email)) {
         return res.status(400).json({ error: 'Correo electrónico inválido' });
       }
       if (req.body.email.length < 15 || req.body.email.length > 40) {

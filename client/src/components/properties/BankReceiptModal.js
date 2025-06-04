@@ -77,4 +77,15 @@ const BankReceiptModal = ({ property, onClose }) => {
   );
 };
 
+BankReceiptModal.propTypes = {
+  property: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired
+  }).isRequired,
+  onClose: PropTypes.func.isRequired
+};
+
+
 export default BankReceiptModal;

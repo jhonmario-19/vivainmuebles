@@ -27,7 +27,11 @@ const AppointmentsList = () => {
       setAppointments(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Error al cargar las citas');
+      console.error('Error al cargar las citas:', err);
+      setError(
+        err.response?.data?.message || 
+        'No se pudieron cargar las citas. Por favor, intente nuevamente más tarde.'
+      );
       setLoading(false);
     }
   };
@@ -45,7 +49,11 @@ const AppointmentsList = () => {
       );
       fetchAppointments(); // Recargar la lista después de actualizar
     } catch (err) {
-      setError('Error al actualizar el estado de la cita');
+      console.error('Error al actualizar el estado de la cita:', err);
+      setError(
+        err.response?.data?.message || 
+        `Error al ${newStatus === 'confirmed' ? 'confirmar' : 'cancelar'} la cita. Por favor, intente nuevamente.`
+      );
     }
   };
 

@@ -1,6 +1,7 @@
 // src/components/properties/PropertyFilters.js
 
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import '../../styles/components/PropertyFilters.css';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 
@@ -101,8 +102,8 @@ const PropertyFilters = ({ onFilterChange }) => {
         {showAdvancedFilters && (
           <div className="filters-advanced">
             <div className="filter-group">
-              <label>Precio</label>
-              <div className="range-inputs">
+              <label htmlFor="price-range">Precio</label>
+              <div className="range-inputs" id="price-range">
                 <input
                   type="number"
                   name="minPrice"
@@ -110,6 +111,7 @@ const PropertyFilters = ({ onFilterChange }) => {
                   onChange={handleInputChange}
                   placeholder="Mín"
                   className="filter-input"
+                  aria-label="Precio mínimo"
                 />
                 <input
                   type="number"
@@ -118,13 +120,15 @@ const PropertyFilters = ({ onFilterChange }) => {
                   onChange={handleInputChange}
                   placeholder="Máx"
                   className="filter-input"
+                  aria-label="Precio máximo"
                 />
               </div>
             </div>
 
             <div className="filter-group">
-              <label>Habitaciones</label>
+              <label htmlFor="bedrooms">Habitaciones</label>
               <select
+                id="bedrooms"
                 name="bedrooms"
                 value={filters.bedrooms}
                 onChange={handleInputChange}
@@ -140,8 +144,9 @@ const PropertyFilters = ({ onFilterChange }) => {
             </div>
 
             <div className="filter-group">
-              <label>Baños</label>
+              <label htmlFor="bathrooms">Baños</label>
               <select
+                id="bathrooms"
                 name="bathrooms"
                 value={filters.bathrooms}
                 onChange={handleInputChange}
@@ -156,8 +161,8 @@ const PropertyFilters = ({ onFilterChange }) => {
             </div>
 
             <div className="filter-group">
-              <label>Área (m²)</label>
-              <div className="range-inputs">
+              <label htmlFor="area-range">Área (m²)</label>
+              <div className="range-inputs" id="area-range">
                 <input
                   type="number"
                   name="minArea"
@@ -165,6 +170,7 @@ const PropertyFilters = ({ onFilterChange }) => {
                   onChange={handleInputChange}
                   placeholder="Mín"
                   className="filter-input"
+                  aria-label="Área mínima"
                 />
                 <input
                   type="number"
@@ -173,6 +179,7 @@ const PropertyFilters = ({ onFilterChange }) => {
                   onChange={handleInputChange}
                   placeholder="Máx"
                   className="filter-input"
+                  aria-label="Área máxima"
                 />
               </div>
             </div>
@@ -190,6 +197,10 @@ const PropertyFilters = ({ onFilterChange }) => {
       </form>
     </div>
   );
+};
+
+PropertyFilters.propTypes = {
+  onFilterChange: PropTypes.func.isRequired
 };
 
 export default PropertyFilters;

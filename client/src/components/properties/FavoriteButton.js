@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import '../../styles/components/FavoriteButton.css';
+import PropTypes from 'prop-types';
 
 const FavoriteButton = ({ propertyId }) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -100,6 +101,10 @@ const FavoriteButton = ({ propertyId }) => {
       )}
     </button>
   );
+};
+
+FavoriteButton.propTypes = {
+  propertyId: PropTypes.number.isRequired
 };
 
 export default FavoriteButton;

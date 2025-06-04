@@ -47,7 +47,6 @@ const ResetPasswordForm = () => {
 
   // Calcular la fortaleza de la contraseña
   const calculatePasswordStrength = (password) => {
-    let strength = 0;
     const validations = [
       password.length >= passwordRules.minLength,
       passwordRules.hasUpperCase.test(password),
@@ -56,13 +55,32 @@ const ResetPasswordForm = () => {
       passwordRules.hasSpecialChar.test(password)
     ];
 
-    strength = validations.filter(Boolean).length;
-    return strength;
+    return validations.filter(Boolean).length;
   };
 
   const getPasswordStrengthColor = (strength) => {
     const colors = ['#ff4d4d', '#ffa64d', '#ffff4d', '#4dff4d'];
     return colors[strength - 1] || colors[0];
+  };
+
+  // Extract nested ternary operation 1: Get strength text
+  const getStrengthText = (strength) => {
+    if (strength === 0) return 'Muy débil';
+    if (strength === 1) return 'Débil';
+    if (strength === 2) return 'Media';
+    if (strength === 3) return 'Fuerte';
+    return 'Muy fuerte';
+  };
+
+  // Extract helper function for password validation
+  const isPasswordValid = (password) => {
+    const passwordErrors = validatePassword(password);
+    return Object.keys(passwordErrors).length === 0;
+  };
+
+  // Extract helper function for passwords match validation
+  const doPasswordsMatch = (password, confirmPassword) => {
+    return password === confirmPassword;
   };
 
   const handlePasswordChange = (e) => {
@@ -76,14 +94,14 @@ const ResetPasswordForm = () => {
     setErrors({});
 
     // Validar que ambas contraseñas coincidan
-    if (password !== confirmPassword) {
+    if (!doPasswordsMatch(password, confirmPassword)) {
       setErrors(prev => ({ ...prev, match: 'Las contraseñas no coinciden' }));
       return;
     }
 
     // Validar reglas de contraseña
-    const passwordErrors = validatePassword(password);
-    if (Object.keys(passwordErrors).length > 0) {
+    if (!isPasswordValid(password)) {
+      const passwordErrors = validatePassword(password);
       setErrors(passwordErrors);
       return;
     }
@@ -104,8 +122,42 @@ const ResetPasswordForm = () => {
     }
   };
 
+  // Extract helper function for requirement validation
+  const isRequirementMet = (requirement) => {
+    switch (requirement) {
+      case 'length':
+        return password.length >= passwordRules.minLength;
+      case 'uppercase':
+        return passwordRules.hasUpperCase.test(password);
+      case 'lowercase':
+        return passwordRules.hasLowerCase.test(password);
+      case 'number':
+        return passwordRules.hasNumber.test(password);
+      case 'special':
+        return passwordRules.hasSpecialChar.test(password);
+      default:
+        return false;
+    }
+  };
+
+  // Extract nested ternary operation 2: Get bar color
+  const getBarColor = (level, passwordStrength) => {
+    return level <= passwordStrength ? 
+      getPasswordStrengthColor(passwordStrength) : '#ddd';
+  };
+
+  // Extract nested ternary operation 3: Get input class
+  const getPasswordInputClass = () => {
+    return Object.keys(errors).length > 0 ? 'input-error' : '';
+  };
+
+  const getConfirmPasswordInputClass = () => {
+    return errors.match ? 'input-error' : '';
+  };
+
   // Calcular la fortaleza actual de la contraseña
   const passwordStrength = calculatePasswordStrength(password);
+  const hasPasswordErrors = Object.keys(errors).length > 0;
 
   return (
     <div className="form-container">
@@ -119,7 +171,7 @@ const ResetPasswordForm = () => {
             id="password"
             value={password}
             onChange={handlePasswordChange}
-            className={Object.keys(errors).length > 0 ? 'input-error' : ''}
+            className={getPasswordInputClass()}
             required
           />
           
@@ -132,20 +184,13 @@ const ResetPasswordForm = () => {
                     key={level}
                     className="strength-bar"
                     style={{
-                      backgroundColor: level <= passwordStrength ? 
-                        getPasswordStrengthColor(passwordStrength) : '#ddd'
+                      backgroundColor: getBarColor(level, passwordStrength)
                     }}
                   ></div>
                 ))}
               </div>
               <span className="strength-text">
-                Fortaleza: {
-                  passwordStrength === 0 ? 'Muy débil' :
-                  passwordStrength === 1 ? 'Débil' :
-                  passwordStrength === 2 ? 'Media' :
-                  passwordStrength === 3 ? 'Fuerte' :
-                  'Muy fuerte'
-                }
+                Fortaleza: {getStrengthText(passwordStrength)}
               </span>
             </div>
           )}
@@ -154,19 +199,19 @@ const ResetPasswordForm = () => {
           <div className="password-requirements">
             <h4>La contraseña debe contener:</h4>
             <ul>
-              <li className={password.length >= passwordRules.minLength ? 'met' : ''}>
+              <li className={isRequirementMet('length') ? 'met' : ''}>
                 Al menos {passwordRules.minLength} caracteres
               </li>
-              <li className={passwordRules.hasUpperCase.test(password) ? 'met' : ''}>
+              <li className={isRequirementMet('uppercase') ? 'met' : ''}>
                 Al menos una letra mayúscula
               </li>
-              <li className={passwordRules.hasLowerCase.test(password) ? 'met' : ''}>
+              <li className={isRequirementMet('lowercase') ? 'met' : ''}>
                 Al menos una letra minúscula
               </li>
-              <li className={passwordRules.hasNumber.test(password) ? 'met' : ''}>
+              <li className={isRequirementMet('number') ? 'met' : ''}>
                 Al menos un número
               </li>
-              <li className={passwordRules.hasSpecialChar.test(password) ? 'met' : ''}>
+              <li className={isRequirementMet('special') ? 'met' : ''}>
                 Al menos un carácter especial
               </li>
             </ul>
@@ -180,7 +225,7 @@ const ResetPasswordForm = () => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className={errors.match ? 'input-error' : ''}
+            className={getConfirmPasswordInputClass()}
             required
           />
           {errors.match && <div className="error-message">{errors.match}</div>}
@@ -188,7 +233,7 @@ const ResetPasswordForm = () => {
 
         {errors.submit && <div className="error-message">{errors.submit}</div>}
 
-        <button type="submit" disabled={loading || Object.keys(errors).length > 0}>
+        <button type="submit" disabled={loading || hasPasswordErrors}>
           {loading ? 'Actualizando...' : 'Actualizar Contraseña'}
         </button>
       </form>

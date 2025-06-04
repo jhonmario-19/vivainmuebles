@@ -75,12 +75,19 @@
   }
   
   .notification-item {
-    padding: 1rem;
-    border-bottom: 1px solid #e2e8f0;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    padding: 10px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    /* Mantener los estilos existentes */
   }
-  
+
+  .notification-item:focus {
+    outline: 2px solid #007bff;
+    outline-offset: -2px;
+  }
   .notification-item:hover {
     background-color: #f7fafc;
   }

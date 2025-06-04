@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../../styles/components/ContactForm.css';
 import { formatPrice } from '../../utils/formatters';
+import PropTypes from 'prop-types';
 
 const ContactForm = ({ property, onClose }) => {
   const [formData, setFormData] = useState({
@@ -150,6 +151,15 @@ const ContactForm = ({ property, onClose }) => {
       </div>
     </div>
   );
+};
+
+ContactForm.propTypes = {
+  property: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired
+  }).isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 export default ContactForm;

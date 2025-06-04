@@ -22,7 +22,21 @@ const Favorites = () => {
       setFavorites(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Error al cargar favoritos');
+      console.error('Error al cargar favoritos:', err);
+      
+      // Manejar diferentes tipos de errores
+      if (err.response) {
+        if (err.response.status === 401) {
+          setError('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+        } else {
+          setError(err.response.data.message || 'Error al cargar favoritos');
+        }
+      } else if (err.request) {
+        setError('No se pudo conectar con el servidor. Por favor, verifique su conexión.');
+      } else {
+        setError('Ocurrió un error inesperado. Por favor, intente nuevamente.');
+      }
+      
       setLoading(false);
     }
   };

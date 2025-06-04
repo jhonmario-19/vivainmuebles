@@ -66,7 +66,25 @@ const invoiceController = {
       doc.pipe(res);
       doc.end();
     } catch (error) {
-      res.status(500).json({ error: 'Error al descargar la factura' });
+      console.error('Error al descargar la factura:', error);
+
+      // Manejar diferentes tipos de errores
+      if (error.message === 'Pago no encontrado') {
+        return res.status(404).json({ 
+          error: 'No se encontró la factura solicitada' 
+        });
+      }
+
+      if (error.code === 'ER_NO_SUCH_TABLE') {
+        return res.status(500).json({ 
+          error: 'Error en la base de datos' 
+        });
+      }
+
+      // Error general
+      res.status(500).json({ 
+        error: 'Error al generar la factura. Por favor, intente nuevamente.' 
+      });
     }
   }
 };

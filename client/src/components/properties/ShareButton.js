@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaShare, FaCopy, FaTimes } from 'react-icons/fa';
 import '../../styles/components/ShareButton.css';
+import PropTypes from 'prop-types';
 
 const ShareButton = ({ property }) => {
   const [showOptions, setShowOptions] = useState(false);
@@ -61,6 +62,12 @@ const ShareButton = ({ property }) => {
       )}
     </div>
   );
+};
+
+ShareButton.propTypes = {
+  property: PropTypes.shape({
+    id: PropTypes.number.isRequired
+  }).isRequired
 };
 
 export default ShareButton;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
+import PropTypes from 'prop-types';
 import '../../styles/components/AppointmentForm.css';
 
 const AppointmentForm = ({ property, onClose }) => {
@@ -140,6 +141,15 @@ const AppointmentForm = ({ property, onClose }) => {
       </div>
     </div>
   );
+};
+
+AppointmentForm.propTypes = {
+  property: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired
+  }).isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 export default AppointmentForm;

@@ -8,16 +8,38 @@ let driver;
 
 // Paso adicional para CP02
 Given('ya existe un usuario registrado con el correo {string}', async (correo) => {
-  await axios.post('http://localhost:5000/api/users/register', {
-    name: 'Usuario Existente',
-    email: correo,
-    password: 'Carlos1234!',
-    role: 'buyer',
-    phone: '3001234567',
-    address: 'Calle A#123'
-  }).catch(() => {
-    // Si ya existe, ignoramos el error (HTTP 409, etc.)
-  });
+  try {
+    await axios.post('http://localhost:5000/api/users/register', {
+      name: 'Usuario Existente',
+      email: correo,
+      password: 'Carlos1234!',
+      role: 'buyer',
+      phone: '3001234567',
+      address: 'Calle A#123'
+    });
+  } catch (error) {
+    // Manejo específico de errores esperados
+    if (error.response) {
+      const status = error.response.status;
+      if (status === 409) {
+        // Usuario ya existe - esto es lo que queremos para la prueba
+        console.log(`Usuario con correo ${correo} ya existe (esperado para la prueba)`);
+        return;
+      } else if (status >= 400 && status < 500) {
+        // Otros errores del cliente - los registramos pero continuamos
+        console.warn(`Error del cliente al crear usuario de prueba: ${status} - ${error.message}`);
+        return;
+      } else {
+        // Errores del servidor - los re-lanzamos porque pueden indicar problemas serios
+        console.error(`Error del servidor al crear usuario de prueba: ${status} - ${error.message}`);
+        throw error;
+      }
+    } else {
+      // Errores de red u otros - los re-lanzamos
+      console.error(`Error de conexión al crear usuario de prueba: ${error.message}`);
+      throw error;
+    }
+  }
 });
 
 Given('el usuario accede a la página de registro', async () => {
@@ -54,7 +76,7 @@ Then('el sistema muestra el mensaje {string}', async (mensajeEsperado) => {
     }
 
     await alerta.accept(); // Cerrar la alerta
-  } catch (error) {
+  } catch (alertError) {
     // Si no hay alerta, intentamos buscar un div con id="message"
     try {
       const elMensaje = await driver.wait(until.elementLocated(By.id('message')), 5000);
@@ -63,10 +85,16 @@ Then('el sistema muestra el mensaje {string}', async (mensajeEsperado) => {
       if (texto !== mensajeEsperado) {
         throw new Error(`Se esperaba "${mensajeEsperado}", pero apareció "${texto}"`);
       }
-    } catch (innerError) {
-      throw new Error(`No se encontró ni alerta ni mensaje en pantalla: ${innerError.message}`);
+    } catch (messageError) {
+      // Si tampoco encontramos el mensaje, lanzamos un error específico
+      console.error('Error buscando alerta:', alertError.message);
+      console.error('Error buscando mensaje:', messageError.message);
+      throw new Error(`No se encontró ni alerta ni mensaje en pantalla. Errores: Alerta: ${alertError.message}, Mensaje: ${messageError.message}`);
+    }
+  } finally {
+    // Aseguramos que el driver se cierre siempre
+    if (driver) {
+      await driver.quit();
     }
   }
-
-  await driver.quit();
 });

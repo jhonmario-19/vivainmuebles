@@ -28,7 +28,7 @@ const LoginForm = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
-  
+
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', formData);
       
@@ -46,7 +46,19 @@ const LoginForm = () => {
         }
       }
     } catch (err) {
-      setError('Correo electrónico o contraseña incorrectos');
+      console.error('Error durante el inicio de sesión:', err);
+      
+      // Manejar diferentes tipos de errores
+      if (err.response) {
+        // Error de respuesta del servidor
+        setError(err.response.data.message || 'Credenciales inválidas');
+      } else if (err.request) {
+        // Error de red
+        setError('No se pudo conectar con el servidor. Por favor, verifique su conexión.');
+      } else {
+        // Otros errores
+        setError('Ocurrió un error durante el inicio de sesión. Por favor, intente nuevamente.');
+      }
     } finally {
       setLoading(false);
     }

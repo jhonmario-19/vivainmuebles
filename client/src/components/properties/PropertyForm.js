@@ -92,7 +92,7 @@ const PropertyForm = () => {
 
       propertyData.append('image', image);
 
-      const response = await axios.post(
+      await axios.post(
         'http://localhost:5000/api/properties',
         propertyData,
         {
@@ -113,7 +113,8 @@ const PropertyForm = () => {
       const errorMessage = err.response?.data?.error || 
                           err.response?.data?.message || 
                           'Error al publicar la propiedad';
-      setError(`${errorMessage}${err.response?.data?.details ? `: ${err.response.data.details}` : ''}`);
+      const details = err.response?.data?.details ? ': ' + err.response.data.details : '';
+      setError(errorMessage + details);
     } finally {
       setLoading(false);
     }

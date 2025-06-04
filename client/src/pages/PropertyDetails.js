@@ -15,10 +15,11 @@ const PropertyDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const [showAppointmentForm, setShowAppointmentForm] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -34,9 +35,22 @@ const PropertyDetails = () => {
           }
         });
         setProperty(response.data);
-        setLoading(false);
       } catch (err) {
-        setError('Error al cargar los detalles de la propiedad');
+        // Handle the exception properly instead of just catching and setting error
+        console.error('Error fetching property:', err);
+        
+        // Provide more specific error messages based on the error type
+        if (err.response?.status === 404) {
+          setError('Propiedad no encontrada');
+        } else if (err.response?.status === 401) {
+          setError('No tienes autorización para ver esta propiedad');
+          navigate('/login', { state: { from: `/property/${id}` } });
+        } else if (err.response?.status >= 500) {
+          setError('Error del servidor. Por favor, intenta más tarde');
+        } else {
+          setError('Error al cargar los detalles de la propiedad');
+        }
+      } finally {
         setLoading(false);
       }
     };
@@ -44,13 +58,27 @@ const PropertyDetails = () => {
     fetchProperty();
   }, [id, token, navigate]);
 
-  if (!token) {
-    return null;
-  }
+  // Extract nested ternary operations into independent functions
+  const getStatusText = (status) => {
+    if (status === 'for_sale') return 'En Venta';
+    if (status === 'for_rent') return 'En Alquiler';
+    return status;
+  };
 
-  if (loading) return <Loading />;
-  if (error) return <div className="error-message">{error}</div>;
-  if (!property) return <div>Propiedad no encontrada</div>;
+  const getPropertyTypeText = (propertyType) => {
+    switch (propertyType) {
+      case 'house':
+        return 'Casa';
+      case 'apartment':
+        return 'Apartamento';
+      case 'commercial':
+        return 'Comercial';
+      case 'land':
+        return 'Terreno';
+      default:
+        return propertyType;
+    }
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', {
@@ -61,6 +89,45 @@ const PropertyDetails = () => {
     }).format(price);
   };
 
+  const handleImageError = (e) => {
+    e.target.onerror = null;
+    e.target.src = '/images/default-property.jpg';
+  };
+
+  const handleContactDialogClose = () => {
+    setShowContactForm(false);
+  };
+
+  const handleAppointmentDialogClose = () => {
+    setShowAppointmentForm(false);
+  };
+
+  // Open dialogs
+  const openContactDialog = () => {
+    setShowContactForm(true);
+  };
+
+  const openAppointmentDialog = () => {
+    setShowAppointmentForm(true);
+  };
+
+  // Early returns for better readability
+  if (!token) {
+    return null;
+  }
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
+
+  if (!property) {
+    return <div>Propiedad no encontrada</div>;
+  }
+
   return (
     <div className="property-details-container">
       <div className="property-details">
@@ -69,10 +136,7 @@ const PropertyDetails = () => {
             src={property.image_url ? `http://localhost:5000${property.image_url}` : '/images/default-property.jpg'} 
             alt={property.title}
             className="property-main-image"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = '/images/default-property.jpg';
-            }}
+            onError={handleImageError}
           />
         </div>
         
@@ -80,7 +144,7 @@ const PropertyDetails = () => {
           <div className="property-header">
             <h1 className="property-title">{property.title}</h1>
             <span className={`status-badge ${property.status}`}>
-              {property.status === 'for_sale' ? 'En Venta' : 'En Alquiler'}
+              {getStatusText(property.status)}
             </span>
           </div>
 
@@ -115,10 +179,7 @@ const PropertyDetails = () => {
           </div>
 
           <div className="property-type">
-            <strong>Tipo de propiedad:</strong> {' '}
-            {property.property_type === 'house' ? 'Casa' :
-             property.property_type === 'apartment' ? 'Apartamento' :
-             property.property_type === 'commercial' ? 'Comercial' : 'Terreno'}
+            <strong>Tipo de propiedad:</strong> {getPropertyTypeText(property.property_type)}
           </div>
 
           <div className="property-description">
@@ -131,13 +192,17 @@ const PropertyDetails = () => {
           <div className="property-actions">
             <button 
               className="contact-button"
-              onClick={() => setShowContactForm(true)}
+              onClick={openContactDialog}
+              type="button"
+              aria-label="Contactar al vendedor"
             >
               Contactar al vendedor
             </button>
             <button 
               className="appointment-button"
-              onClick={() => setShowAppointmentForm(true)}
+              onClick={openAppointmentDialog}
+              type="button"
+              aria-label="Agendar visita a la propiedad"
             >
               Agendar Visita
             </button>
@@ -146,23 +211,29 @@ const PropertyDetails = () => {
       </div>
 
       {showContactForm && (
-        <div className="modal-overlay" onClick={(e) => {
-          if (e.target.className === 'modal-overlay') {
-            setShowContactForm(false);
-          }
-        }}>
+        <dialog 
+          open={showContactForm}
+          className="contact-dialog"
+          aria-labelledby="contact-form-title"
+        >
           <ContactForm 
             property={property}
-            onClose={() => setShowContactForm(false)}
+            onClose={handleContactDialogClose}
           />
-        </div>
+        </dialog>
       )}
 
       {showAppointmentForm && (
-        <AppointmentForm 
-          property={property}
-          onClose={() => setShowAppointmentForm(false)}
-        />
+        <dialog 
+          open={showAppointmentForm}
+          className="appointment-dialog"
+          aria-labelledby="appointment-form-title"
+        >
+          <AppointmentForm 
+            property={property}
+            onClose={handleAppointmentDialogClose}
+          />
+        </dialog>
       )}
     </div>
   );

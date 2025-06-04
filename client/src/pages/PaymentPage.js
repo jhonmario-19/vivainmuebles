@@ -21,48 +21,70 @@ const PaymentPage = () => {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        
-        // Obtener los datos de la propiedad
-        const propertyResponse = await axios.get(
-          `http://localhost:5000/api/properties/${id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        );
-        
-        if (propertyResponse.data.status !== 'for_rent') {
-          setError('Esta propiedad no está disponible para arriendo');
-          return;
-        }
-        
-        setProperty(propertyResponse.data);
-
-        // Obtener los datos del usuario
-        const userResponse = await axios.get(
-          'http://localhost:5000/api/users/profile',
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        );
-
-        // Actualizar el estado con el nombre del usuario
-        setPaymentData(prev => ({
-          ...prev,
-          cardName: userResponse.data.name
-        }));
-
-      } catch (err) {
-        setError('Error al cargar los datos necesarios');
-      } finally {
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Sesión no válida. Por favor, inicie sesión nuevamente.');
         setLoading(false);
+        return;
       }
-    };
 
-    fetchData();
-  }, [id]);
+      // Obtener los datos de la propiedad
+      const propertyResponse = await axios.get(
+        `http://localhost:5000/api/properties/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      if (propertyResponse.data.status !== 'for_rent') {
+        setError('Esta propiedad no está disponible para arriendo');
+        setLoading(false);
+        return;
+      }
+      
+      setProperty(propertyResponse.data);
+
+      // Obtener los datos del usuario
+      const userResponse = await axios.get(
+        'http://localhost:5000/api/users/profile',
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      setPaymentData(prev => ({
+        ...prev,
+        cardName: userResponse.data.name
+      }));
+
+    } catch (err) {
+      console.error('Error al cargar los datos:', err);
+      
+      if (err.response) {
+        // Error de respuesta del servidor
+        if (err.response.status === 401) {
+          setError('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+        } else if (err.response.status === 404) {
+          setError('La propiedad no fue encontrada.');
+        } else {
+          setError(err.response.data.message || 'Error al cargar los datos necesarios');
+        }
+      } else if (err.request) {
+        // Error de red
+        setError('No se pudo conectar con el servidor. Por favor, verifique su conexión.');
+      } else {
+        // Otros errores
+        setError('Ocurrió un error inesperado. Por favor, intente nuevamente.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [id]);
 
   const handleInputChange = (e) => {
     let { name, value } = e.target;

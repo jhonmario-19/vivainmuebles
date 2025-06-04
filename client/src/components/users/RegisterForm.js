@@ -75,6 +75,15 @@ const RegisterForm = () => {
     return colors[strength - 1] || colors[0];
   };
 
+  // Helper function to get password strength text
+  const getPasswordStrengthText = (strength) => {
+    if (strength === 0) return 'Muy débil';
+    if (strength === 1) return 'Débil';
+    if (strength === 2) return 'Media';
+    if (strength === 3) return 'Fuerte';
+    return 'Muy fuerte';
+  };
+
   useEffect(() => {
     const checkFormValidity = () => {
       // Verificar que todos los campos requeridos estén llenos
@@ -114,12 +123,10 @@ const RegisterForm = () => {
 
     // Validar que las contraseñas coincidan
     if (name === 'confirmPassword' || (name === 'password' && formData.confirmPassword)) {
-      if (name === 'confirmPassword' && value !== formData.password) {
-        setErrors(prev => ({
-          ...prev,
-          match: 'Las contraseñas no coinciden'
-        }));
-      } else if (name === 'password' && value !== formData.confirmPassword) {
+      const passwordToCompare = name === 'confirmPassword' ? formData.password : formData.confirmPassword;
+      const currentValue = name === 'confirmPassword' ? value : formData.password;
+      
+      if (value !== passwordToCompare && currentValue !== passwordToCompare) {
         setErrors(prev => ({
           ...prev,
           match: 'Las contraseñas no coinciden'
@@ -131,6 +138,17 @@ const RegisterForm = () => {
           return newErrors;
         });
       }
+    }
+  };
+
+  const handleRoleChange = (role) => {
+    setFormData(prev => ({ ...prev, role }));
+  };
+
+  const handleRoleKeyDown = (e, role) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleRoleChange(role);
     }
   };
 
@@ -149,7 +167,8 @@ const RegisterForm = () => {
       });
 
       if (response.data) {
-        <div id="message">Registro exitoso</div>
+        // Show success message - you might want to use a proper notification system
+        console.log('Registro exitoso');
         navigate('/login');
       }
     } catch (err) {
@@ -171,23 +190,29 @@ const RegisterForm = () => {
         <h2 className="form-title">Regístrate como</h2>
         
         <div className="role-selector">
-          <div 
+          <button
+            type="button"
             className={`role-option ${formData.role === 'Comprador' ? 'selected' : ''}`}
-            onClick={() => setFormData(prev => ({ ...prev, role: 'Comprador' }))}
+            onClick={() => handleRoleChange('Comprador')}
+            onKeyDown={(e) => handleRoleKeyDown(e, 'Comprador')}
+            aria-pressed={formData.role === 'Comprador'}
           >
             <span className="role-icon">🏠</span>
             <h3>Comprador</h3>
             <p>Busco propiedades para comprar o rentar</p>
-          </div>
+          </button>
           
-          <div 
+          <button
+            type="button"
             className={`role-option ${formData.role === 'Vendedor' ? 'selected' : ''}`}
-            onClick={() => setFormData(prev => ({ ...prev, role: 'Vendedor' }))}
+            onClick={() => handleRoleChange('Vendedor')}
+            onKeyDown={(e) => handleRoleKeyDown(e, 'Vendedor')}
+            aria-pressed={formData.role === 'Vendedor'}
           >
             <span className="role-icon">🔑</span>
             <h3>Vendedor</h3>
             <p>Quiero publicar propiedades para vender o rentar</p>
-          </div>
+          </button>
         </div>
 
         <div className="form-group">
@@ -240,13 +265,7 @@ const RegisterForm = () => {
                 ))}
               </div>
               <span className="strength-text">
-                Fortaleza: {
-                  passwordStrength === 0 ? 'Muy débil' :
-                  passwordStrength === 1 ? 'Débil' :
-                  passwordStrength === 2 ? 'Media' :
-                  passwordStrength === 3 ? 'Fuerte' :
-                  'Muy fuerte'
-                }
+                Fortaleza: {getPasswordStrengthText(passwordStrength)}
               </span>
             </div>
           )}

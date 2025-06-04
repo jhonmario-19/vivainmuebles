@@ -44,4 +44,11 @@ const BankReceiptButton = ({ property }) => {
   );
 };
 
+BankReceiptButton.propTypes = {
+  property: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    // Agrega otras propiedades del objeto property si son necesarias
+  }).isRequired
+};
+
 export default BankReceiptButton;

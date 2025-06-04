@@ -2,6 +2,7 @@ import React from 'react';
 import { FaFileContract } from 'react-icons/fa';
 import axios from 'axios';
 import '../../styles/components/GenerateContractButton.css';
+import PropTypes from 'prop-types';
 
 const GenerateContractButton = ({ transactionId, contractType }) => {
   const handleGenerateContract = async () => {
@@ -41,6 +42,11 @@ const GenerateContractButton = ({ transactionId, contractType }) => {
       Generar Contrato
     </button>
   );
+};
+
+GenerateContractButton.propTypes = {
+  transactionId: PropTypes.string.isRequired,
+  contractType: PropTypes.string.isRequired
 };
 
 export default GenerateContractButton;

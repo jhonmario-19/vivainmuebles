@@ -42,10 +42,24 @@ const EditProperty = () => {
       }
       setLoading(false);
     } catch (err) {
-      setError('Error al cargar la propiedad');
+      console.error('Error al cargar la propiedad:', err);
+      setError(
+        err.response?.data?.message || 
+        'No se pudo cargar la información de la propiedad. Por favor, intente nuevamente.'
+      );
       setLoading(false);
+      
+      // Si el error es por autenticación, redirigir al login
+      if (err.response?.status === 401) {
+        navigate('/login', { 
+          state: { 
+            from: `/edit-property/${id}`,
+            message: 'Por favor inicie sesión para editar la propiedad'
+          }
+        });
+      }
     }
-  }, [id]);
+  }, [id, navigate]);
 
   useEffect(() => {
     fetchProperty();

@@ -3,6 +3,7 @@
 import React from 'react';
 import { FaUser, FaPhone, FaEnvelope } from 'react-icons/fa';
 import '../../styles/components/SellerInfo.css';
+import PropTypes from 'prop-types';
 
 const SellerInfo = ({ seller }) => {
   return (
@@ -26,6 +27,14 @@ const SellerInfo = ({ seller }) => {
       </div>
     </div>
   );
+};
+
+SellerInfo.propTypes = {
+  seller: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    phone: PropTypes.string,
+    email: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default SellerInfo;

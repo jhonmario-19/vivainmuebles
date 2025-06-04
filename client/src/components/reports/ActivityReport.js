@@ -25,8 +25,17 @@ const ActivityReport = () => {
       setReport(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Error al cargar el reporte de actividades');
+      console.error('Error al cargar el reporte:', err);
+      setError(
+        err.response?.data?.message || 
+        'No se pudo cargar el reporte de actividades. Por favor, intente nuevamente.'
+      );
       setLoading(false);
+
+      // Si el error es por autenticación, podemos manejarlo específicamente
+      if (err.response?.status === 401) {
+        setError('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+      }
     }
   };
 

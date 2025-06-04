@@ -43,23 +43,39 @@ Given('accede al formulario de publicación de propiedades', async () => {
   await driver.wait(until.elementLocated(By.id('title')), 5000);
 });
 
+// Función auxiliar para llenar el formulario con los datos de la propiedad
+async function fillPropertyForm(propertyData, imagen) {
+  await driver.findElement(By.id('title')).sendKeys(propertyData.titulo);
+  await driver.findElement(By.id('description')).sendKeys(propertyData.descripcion);
+  await driver.findElement(By.id('price')).sendKeys(propertyData.precio);
+  await driver.findElement(By.id('area')).sendKeys(propertyData.area);
+  await driver.findElement(By.id('address')).sendKeys(propertyData.direccion);
+  await driver.findElement(By.id('propertyType')).sendKeys(propertyData.tipo);
+  await driver.findElement(By.id('rooms')).sendKeys(propertyData.habitaciones);
+  await driver.findElement(By.id('bathrooms')).sendKeys(propertyData.banos);
+
+  const filePath = path.join(__dirname, '..', 'assets', imagen);
+  await driver.findElement(By.id('image')).sendKeys(filePath);
+}
+
 When(
   'completa el formulario de propiedad con título {string}, descripción {string}, precio {string}, área {string}, dirección {string}, tipo {string}, habitaciones {string}, baños {string} y sube la imagen {string}',
-  async (titulo, descripcion, precio, area, direccion, tipo, habitaciones, banos, imagen) => {
-    // Todos los campos deben tener estos IDs en tu formulario de publicación:
-    await driver.findElement(By.id('title')).sendKeys(titulo);
-    await driver.findElement(By.id('description')).sendKeys(descripcion);
-    await driver.findElement(By.id('price')).sendKeys(precio);
-    await driver.findElement(By.id('area')).sendKeys(area);
-    await driver.findElement(By.id('address')).sendKeys(direccion);
-    await driver.findElement(By.id('propertyType')).sendKeys(tipo);
-    await driver.findElement(By.id('rooms')).sendKeys(habitaciones);
-    await driver.findElement(By.id('bathrooms')).sendKeys(banos);
+  async function(...params) {
+    const [titulo, descripcion, precio, area, direccion, tipo, habitaciones, banos, imagen] = params;
+    
+    const propertyData = {
+      titulo,
+      descripcion,
+      precio,
+      area,
+      direccion,
+      tipo,
+      habitaciones,
+      banos
+    };
 
-    // Para subir imagen: el input file debe tener id="image"
-    const filePath = path.join(__dirname, '..', 'assets', imagen);
-    // Asegúrate de que pongas la imagen en e.g. /e2e-tests/assets/casa.jpg
-    await driver.findElement(By.id('image')).sendKeys(filePath);
+    // Usar la función auxiliar para llenar el formulario
+    await fillPropertyForm(propertyData, imagen);
   }
 );
 

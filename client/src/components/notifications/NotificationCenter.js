@@ -109,10 +109,18 @@ const NotificationCenter = () => {
               <p className="no-notifications">No hay notificaciones</p>
             ) : (
               notifications.map(notification => (
-                <div 
+                <button 
                   key={notification.id} 
                   className={`notification-item ${!notification.read_at ? 'unread' : ''}`}
                   onClick={() => markAsRead(notification.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      markAsRead(notification.id);
+                    }
+                  }}
+                  role="menuitem"
+                  tabIndex={0}
+                  aria-label={`Notificación: ${notification.message}`}
                 >
                   <div className="notification-content">
                     <p>{notification.message}</p>
@@ -120,7 +128,7 @@ const NotificationCenter = () => {
                       {formatNotificationTime(notification.created_at)}
                     </span>
                   </div>
-                </div>
+                </button>
               ))
             )}
           </div>
